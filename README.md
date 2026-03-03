@@ -71,13 +71,6 @@ npm run electron:dev   # Geliştirme
 npm run electron:build # Mac/Windows dağıtım
 ```
 
-## Ölçekleme Stratejisi (Ücretsiz → Ücretli)
-
-1. **0-100 kullanıcı**: SQLite, tek sunucu, Hetzner CX11 €4/ay
-2. **100-1000 kullanıcı**: PostgreSQL, Hetzner CX21 €8/ay  
-3. **1000+ kullanıcı**: PostgreSQL + connection pooling (PgBouncer), €20/ay
-4. **10000+**: Read replicas, Redis cache, load balancer
-
 ## Design Patterns Kullanılanlar
 
 - **Repository Pattern**: Veri erişimini soyutlar, test edilebilir
