@@ -389,29 +389,17 @@ function Modal() {
 
 /* ═══════════════════════════════════════════════════════ TIMER PAGE (own state - no re-render leak) */
 function TimerPage() {
-  const {notes,setNotes,selNote} = useContext(Ctx)
-  const [running,setRunning] = useState(false)
-  const [mode,setMode]       = useState("work")
-  const [secs,setSecs]       = useState(25*60)
-  const [pomos,setPomos]     = useState(0)
-  const [qn,setQn]           = useState("")
-  const ref = useRef(null)
-  const WORK=25*60, BRK=5*60
+  const {notes,setNotes,selNote,
+    tRunning:running,setTRunning:setRunning,
+    tMode:mode,setTMode:setMode,
+    tSecs:secs,setTSecs:setSecs,
+    tPomos:pomos,setTPomos:setPomos,
+    tWorkMin,setTWorkMin,tBreakMin,setTBreakMin,
+    tDnd,setTDnd,tRef:ref
+  } = useContext(Ctx)
 
-  useEffect(()=>{
-    if (running) {
-      ref.current=setInterval(()=>{
-        setSecs(s=>{
-          if(s<=1){
-            if(mode==="work"){ setPomos(p=>p+1); setMode("break"); return BRK }
-            setMode("work"); return WORK
-          }
-          return s-1
-        })
-      },1000)
-    } else clearInterval(ref.current)
-    return ()=>clearInterval(ref.current)
-  },[running,mode])
+  const [qn,setQn] = useState("")
+  const WORK=tWorkMin*60, BRK=tBreakMin*60
 
   const fmt=s=>`${String(Math.floor(s/60)).padStart(2,"0")}:${String(s%60).padStart(2,"0")}`
   const tot=mode==="work"?WORK:BRK
@@ -436,6 +424,36 @@ function TimerPage() {
             {notes.map(n=><option key={n.id}>{n.title}</option>)}
           </select>
         </div>
+
+        {/* Süre ayarları */}
+        <div style={{display:"flex",gap:12,marginBottom:18,alignItems:"flex-end"}}>
+          <div style={{textAlign:"center"}}>
+            <div style={{fontSize:10,color:"var(--t3)",marginBottom:4,fontWeight:700}}>ÇALIŞMA (dk)</div>
+            <input type="number" min="1" max="90" value={tWorkMin}
+              onChange={e=>{
+                const v=Number(e.target.value)
+                setTWorkMin(v)
+                if(!running&&mode==="work") setSecs(v*60)
+              }}
+              style={{width:60,textAlign:"center",background:"var(--s1)",border:"1px solid var(--b1)",borderRadius:6,color:"var(--t1)",padding:"5px",fontSize:14,fontFamily:"JetBrains Mono",outline:"none"}}/>
+          </div>
+          <div style={{textAlign:"center"}}>
+            <div style={{fontSize:10,color:"var(--t3)",marginBottom:4,fontWeight:700}}>MOLA (dk)</div>
+            <input type="number" min="1" max="30" value={tBreakMin}
+              onChange={e=>{
+                const v=Number(e.target.value)
+                setTBreakMin(v)
+                if(!running&&mode==="break") setSecs(v*60)
+              }}
+              style={{width:60,textAlign:"center",background:"var(--s1)",border:"1px solid var(--b1)",borderRadius:6,color:"var(--t1)",padding:"5px",fontSize:14,fontFamily:"JetBrains Mono",outline:"none"}}/>
+          </div>
+          <button
+            onClick={()=>setTDnd(d=>!d)}
+            style={{padding:"6px 12px",borderRadius:6,border:`1px solid ${tDnd?"var(--orange)":"var(--b1)"}`,background:tDnd?"rgba(255,170,61,.15)":"var(--s1)",color:tDnd?"var(--orange)":"var(--t2)",cursor:"pointer",fontSize:12,fontFamily:"Syne",fontWeight:600,whiteSpace:"nowrap"}}>
+            {tDnd?"🔕 Rahatsız Etme Açık":"🔔 Rahatsız Etme Kapalı"}
+          </button>
+        </div>
+
         <div className="tring">
           <svg className="tsvg" width="200" height="200" viewBox="0 0 200 200">
             <circle cx="100" cy="100" r="100" fill="none" stroke="var(--s2)" strokeWidth="9"/>
@@ -450,9 +468,11 @@ function TimerPage() {
             <div className="ttime" style={{color:mode==="work"?"var(--t1)":"var(--green)"}}>{fmt(secs)}</div>
           </div>
         </div>
+
         <div className="pdots">
           {[0,1,2,3].map(i=><div key={i} className={`pdot${i<pomos?" on":""}`}/>)}
         </div>
+
         <div className="tctrl">
           <button className="tsml" onClick={()=>{ clearInterval(ref.current); setRunning(false); setMode("work"); setSecs(WORK); setPomos(0) }}>⏹</button>
           <button className="tbig" onClick={()=>setRunning(r=>!r)}>{running?"⏸":"▶"}</button>
@@ -460,6 +480,7 @@ function TimerPage() {
             {mode==="work"?"☕":"⚡"}
           </button>
         </div>
+
         <div style={{width:"100%",maxWidth:320}}>
           <div style={{fontSize:10,fontWeight:700,color:"var(--t3)",letterSpacing:1,marginBottom:7}}>HIZLI NOT</div>
           <textarea className="qn" rows={4} placeholder="Aklınıza gelen notları buraya yazın..." value={qn} onChange={e=>setQn(e.target.value)}/>
@@ -469,9 +490,10 @@ function TimerPage() {
             </button>
           )}
         </div>
+
         {running&&(
           <div style={{marginTop:13,padding:"8px 15px",background:"rgba(79,163,255,.09)",borderRadius:7,fontSize:12,color:"var(--t2)",textAlign:"center"}}>
-            ⚡ Aktif seans — {fmt(secs)} kaldı
+            ⚡ Aktif seans — {fmt(secs)} kaldı {tDnd&&"· 🔕 Rahatsız Etme Açık"}
           </div>
         )}
       </div>
@@ -912,9 +934,36 @@ export default function App() {
   const [editTxt,setEditTxt]   = useState("")
   const [editTitle,setEditTitle]= useState("")
   const [modal,setModal]       = useState(null)
+  const [tRunning, setTRunning]     = useState(false)
+const [tMode, setTMode]           = useState("work")
+const [tSecs, setTSecs]           = useState(25*60)
+const [tPomos, setTPomos]         = useState(0)
+const [tWorkMin, setTWorkMin]     = useState(25)
+const [tBreakMin, setTBreakMin]   = useState(5)
+const [tDnd, setTDnd]             = useState(false)
+const tRef                         = useRef(null)
+
+useEffect(()=>{
+  if(tRunning){
+    tRef.current=setInterval(()=>{
+      setTSecs(s=>{
+        const WORK=tWorkMin*60, BRK=tBreakMin*60
+        if(s<=1){
+          if(tMode==="work"){ setTPomos(p=>p+1); setTMode("break"); return BRK }
+          setTMode("work"); return WORK
+        }
+        return s-1
+      })
+    },1000)
+  } else clearInterval(tRef.current)
+  return ()=>clearInterval(tRef.current)
+},[tRunning,tMode,tWorkMin,tBreakMin])
   const [modalTask,setModalTask]= useState(null)
 
   const ctx = {
+    tRunning,setTRunning,tMode,setTMode,tSecs,setTSecs,
+    tPomos,setTPomos,tWorkMin,setTWorkMin,tBreakMin,setTBreakMin,
+    tDnd,setTDnd,tRef,
     page,setPage,folders,setFolders,notes,setNotes,tasks,setTasks,goals,setGoals,
     selFolder,setSelFolder,selNote,setSelNote,
     editMode,setEditMode,editTxt,setEditTxt,editTitle,setEditTitle,
