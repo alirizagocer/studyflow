@@ -182,24 +182,55 @@ const t0 = new Date(); t0.setHours(0,0,0,0)
 const dk  = d => { const x=new Date(d); x.setHours(0,0,0,0); return x.toISOString().slice(0,10) }
 const add = (d,n) => { const r=new Date(d); r.setDate(r.getDate()+n); return r }
 const uid = () => Date.now()+Math.floor(Math.random()*9999)
+const timeToMins = t => { const [h,m]=(t||"0:0").split(":").map(Number); return h*60+m }
+const getStartMins = t => t.startTime ? timeToMins(t.startTime) : (t.hour||9)*60
+const getEndMins   = t => t.endTime   ? timeToMins(t.endTime)   : ((t.hour||9)+(t.dur||1))*60
+const PC = {high:"#ff5c6e",medium:"#ffaa3d",low:"#2edc8a"}
+const PL = {high:"🔴 Yüksek",medium:"🟡 Orta",low:"🟢 Düşük"}
+const NOTE_TPLS = {
+  blank:  {name:"Boş",       body:""},
+  lecture:{name:"Ders Notu", body:"**Tarih:** \n**Hoca:** \n\n## Konu\n\n## Önemli Noktalar\n- \n\n## Sorular\n- \n\n## Özet\n"},
+  meeting:{name:"Toplantı",  body:"**Tarih:** \n**Katılımcılar:** \n\n## Gündem\n\n## Notlar\n\n## Eylem Maddeleri\n- \n"},
+  problem:{name:"Problem",   body:"## Tanım\n\n## Yaklaşım\n1. \n\n## Çözüm\n\n## Sonuç\n"},
+}
 const COLORS = ["#4fa3ff","#7c6bff","#ff6fa8","#2edc8a","#ffaa3d","#ff5c6e","#a78bfa"]
 const DNS = ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"]
 const HRS = Array.from({length:17},(_,i)=>i+7)
 
+function renderInline(text, onLink) {
+  return text.split(/(\[\[.+?\]\]|`[^`]+`|\*\*[^*]+\*\*)/g).map((p,j)=>{
+    if (p.startsWith("[[")&&p.endsWith("]]")){ const t=p.slice(2,-2); return <span key={j} className="nlink" onClick={()=>onLink?.(t)}>{t}</span> }
+    if (p.startsWith("`")&&p.endsWith("`")) return <code key={j}>{p.slice(1,-1)}</code>
+    if (p.startsWith("**")&&p.endsWith("**")) return <strong key={j}>{p.slice(2,-2)}</strong>
+    return p
+  })
+}
 function renderMd(text, onLink) {
   if (!text) return null
-  return text.split("\n").map((line,i) => {
-    if (line.startsWith("# "))  return <h1 key={i}>{line.slice(2)}</h1>
-    if (line.startsWith("## ")) return <h2 key={i}>{line.slice(3)}</h2>
-    if (line.startsWith("- ")||line.startsWith("* ")) return <ul key={i}><li>{line.slice(2)}</li></ul>
-    if (!line.trim()) return <br key={i}/>
-    const parts = line.split(/(\[\[.+?\]\]|`[^`]+`)/g).map((p,j)=>{
-      if (p.startsWith("[[")&&p.endsWith("]]")) { const t=p.slice(2,-2); return <span key={j} className="nlink" onClick={()=>onLink?.(t)}>{t}</span> }
-      if (p.startsWith("`")&&p.endsWith("`")) return <code key={j}>{p.slice(1,-1)}</code>
-      return p
-    })
-    return <p key={i}>{parts}</p>
-  })
+  const lines = text.split("\n"); const out = []; let i = 0
+  while (i < lines.length) {
+    const line = lines[i]
+    if (line.trim().startsWith("|") && line.includes("|",1)) {
+      const tls=[]; while(i<lines.length&&lines[i].trim().startsWith("|")){tls.push(lines[i]);i++}
+      const isDiv=l=>/^\s*\|[\s\-:|]+\|\s*$/.test(l)
+      const cells=l=>l.split("|").slice(1,-1).map(c=>c.trim())
+      const hdr=tls.find(l=>!isDiv(l)); const rows=tls.filter(l=>!isDiv(l)&&l!==hdr)
+      out.push(<div key={`t${i}`} style={{overflowX:"auto",marginBottom:10}}>
+        <table style={{borderCollapse:"collapse",width:"100%",fontSize:13}}>
+          {hdr&&<thead><tr>{cells(hdr).map((c,ci)=><th key={ci} style={{padding:"6px 12px",background:"var(--s2)",border:"1px solid var(--b1)",color:"var(--t1)",fontWeight:700,textAlign:"left"}}>{c}</th>)}</tr></thead>}
+          <tbody>{rows.map((r,ri)=><tr key={ri}>{cells(r).map((c,ci)=><td key={ci} style={{padding:"5px 12px",border:"1px solid var(--b1)",color:"var(--t2)"}}>{c}</td>)}</tr>)}</tbody>
+        </table></div>); continue
+    }
+    if (line.startsWith("# "))  { out.push(<h1 key={i}>{renderInline(line.slice(2),onLink)}</h1>); i++; continue }
+    if (line.startsWith("## ")) { out.push(<h2 key={i}>{renderInline(line.slice(3),onLink)}</h2>); i++; continue }
+    if (line.startsWith("### ")){ out.push(<h3 key={i} style={{fontSize:13,color:"var(--t1)",margin:"8px 0 4px"}}>{renderInline(line.slice(4),onLink)}</h3>); i++; continue }
+    if (line.startsWith("> "))  { out.push(<blockquote key={i} style={{borderLeft:"3px solid var(--acc)",paddingLeft:12,color:"var(--t2)",fontSize:13,margin:"6px 0"}}>{line.slice(2)}</blockquote>); i++; continue }
+    if (line.startsWith("- ")||line.startsWith("* ")){ out.push(<ul key={i}><li style={{color:"var(--t2)",fontSize:13,lineHeight:1.7}}>{renderInline(line.slice(2),onLink)}</li></ul>); i++; continue }
+    if (/^\d+\. /.test(line)){ out.push(<ol key={i} style={{paddingLeft:16,marginBottom:4}}><li style={{color:"var(--t2)",fontSize:13,lineHeight:1.7}}>{renderInline(line.replace(/^\d+\. /,""),onLink)}</li></ol>); i++; continue }
+    if (!line.trim()){ out.push(<br key={i}/>); i++; continue }
+    out.push(<p key={i}>{renderInline(line,onLink)}</p>); i++
+  }
+  return out
 }
 
 const SV = (d,p) => d.reduce((s,k)=>({ ...s,[k]:null }),{})
@@ -256,66 +287,164 @@ const I_GOALS=[
 /* ═══════════════════════════════════════════════════════ CONTEXT */
 const Ctx = createContext(null)
 
+/* ═══════════════════════════════════════════════════════ GlobalSearch */
+
+function GlobalSearch() {
+  const {notes,tasks,setPage,setSelNote,setSelFolder,setEditTxt,setEditTitle,setEditMode,setModal} = useContext(Ctx)
+  const [open,setOpen] = useState(false)
+  const [q,setQ]       = useState("")
+  const ref            = useRef(null)
+
+  useEffect(()=>{
+    const h = e => {
+      if (e.ctrlKey && e.key==="f") { e.preventDefault(); setOpen(true); setQ(""); setTimeout(()=>ref.current?.focus(),50) }
+      if (e.key==="Escape") setOpen(false)
+    }
+    window.addEventListener("keydown",h); return ()=>window.removeEventListener("keydown",h)
+  },[])
+
+  if (!open) return null
+  const nRes = q ? notes.filter(n=>n.title.toLowerCase().includes(q.toLowerCase())||n.body.toLowerCase().includes(q.toLowerCase())).slice(0,6) : []
+  const tRes = q ? tasks.filter(t=>t.title.toLowerCase().includes(q.toLowerCase())).slice(0,6) : []
+
+  return (
+    <div className="ov" style={{zIndex:500}} onClick={()=>setOpen(false)}>
+      <div style={{width:520,maxWidth:"92vw",background:"var(--bg3)",border:"1px solid var(--b2)",borderRadius:12,overflow:"hidden",boxShadow:"0 20px 60px rgba(0,0,0,.7)"}} onClick={e=>e.stopPropagation()}>
+        <div style={{display:"flex",alignItems:"center",gap:10,padding:"12px 16px",borderBottom:"1px solid var(--b1)"}}>
+          <span style={{fontSize:15}}>🔍</span>
+          <input ref={ref} value={q} onChange={e=>setQ(e.target.value)} placeholder="Not veya görev ara..." style={{flex:1,background:"transparent",border:"none",outline:"none",color:"var(--t1)",fontSize:14,fontFamily:"Syne"}}/>
+          <kbd style={{fontSize:11,color:"var(--t3)",background:"var(--s2)",padding:"2px 6px",borderRadius:4}}>ESC</kbd>
+        </div>
+        {q ? (
+          <div style={{maxHeight:400,overflowY:"auto",padding:8}}>
+            {nRes.length>0&&<>
+              <div style={{fontSize:9,fontWeight:700,color:"var(--t3)",letterSpacing:1.5,textTransform:"uppercase",padding:"6px 10px 3px"}}>Notlar</div>
+              {nRes.map(n=>(
+                <div key={n.id} style={{padding:"8px 10px",borderRadius:7,cursor:"pointer"}} onMouseOver={e=>e.currentTarget.style.background="var(--s1)"} onMouseOut={e=>e.currentTarget.style.background="transparent"}
+                  onClick={()=>{setPage("notes");setSelFolder(n.fid);setSelNote(n);setEditTxt(n.body);setEditTitle(n.title);setEditMode(false);setOpen(false)}}>
+                  <div style={{fontSize:13,fontWeight:600}}>📄 {n.title}</div>
+                  <div style={{fontSize:11,color:"var(--t3)",marginTop:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{n.body.slice(0,80)}</div>
+                </div>
+              ))}
+            </>}
+            {tRes.length>0&&<>
+              <div style={{fontSize:9,fontWeight:700,color:"var(--t3)",letterSpacing:1.5,textTransform:"uppercase",padding:"6px 10px 3px"}}>Görevler</div>
+              {tRes.map(t=>(
+                <div key={t.id} style={{padding:"8px 10px",borderRadius:7,cursor:"pointer",display:"flex",alignItems:"center",gap:8}} onMouseOver={e=>e.currentTarget.style.background="var(--s1)"} onMouseOut={e=>e.currentTarget.style.background="transparent"}
+                  onClick={()=>{setPage("calendar");setOpen(false)}}>
+                  <div style={{width:8,height:8,borderRadius:"50%",background:t.color,flexShrink:0}}/>
+                  <div style={{fontSize:13,fontWeight:600,flex:1}}>{t.title}</div>
+                  {t.priority&&<span style={{fontSize:11}}>{PL[t.priority]}</span>}
+                  <div style={{fontSize:11,color:"var(--t3)"}}>{t.date}</div>
+                </div>
+              ))}
+            </>}
+            {nRes.length===0&&tRes.length===0&&<div style={{textAlign:"center",padding:"24px",color:"var(--t3)"}}>Sonuç bulunamadı</div>}
+          </div>
+        ):(
+          <div style={{padding:"18px 22px"}}>
+            <div style={{fontSize:11,color:"var(--t3)",marginBottom:12,fontWeight:700,letterSpacing:1}}>KLAVYE KISAYOLLARI</div>
+            {[["Ctrl+N","Yeni Not"],["Ctrl+T","Yeni Görev"],["Ctrl+F","Arama Aç"],["Ctrl+P","Zamanlayıcı"]].map(([k,v])=>(
+              <div key={k} style={{display:"flex",justifyContent:"space-between",alignItems:"center",padding:"5px 0",borderBottom:"1px solid var(--b1)"}}>
+                <kbd style={{background:"var(--s2)",padding:"2px 9px",borderRadius:4,fontSize:12,color:"var(--t1)"}}>{k}</kbd>
+                <span style={{fontSize:12,color:"var(--t2)"}}>{v}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 /* ═══════════════════════════════════════════════════════ MODAL (own state) */
 function Modal() {
   const {modal,setModal,modalTask,folders,notes,setNotes,setTasks,setGoals,setFolders,selFolder,setSelFolder,setSelNote,setEditMode,setEditTxt,setEditTitle} = useContext(Ctx)
-  const [f,setF] = useState({})
-  
-  useEffect(()=>{ setF({}) },[modal])
-
+  const [f,setF]     = useState({})
+  const [tpl,setTpl] = useState("blank")
+  useEffect(()=>{ setF({}); setTpl("blank") },[modal])
   if (!modal) return null
   const upd = (k,v) => setF(x=>({...x,[k]:v}))
 
-  /* Task detail */
+  /* ── GÖREV DETAY ── */
   if (modal==="td" && modalTask) {
-    const t=modalTask
+    const t = modalTask
+    const st = t.startTime||`${String(t.hour||9).padStart(2,"0")}:00`
+    const et = t.endTime||`${String((t.hour||9)+(t.dur||1)).padStart(2,"0")}:00`
     return (
       <div className="ov" onClick={e=>e.target.className==="ov"&&setModal(null)}>
         <div className="mdl">
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:15}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:14}}>
             <div style={{display:"flex",alignItems:"center",gap:9}}>
               <div style={{width:11,height:11,borderRadius:"50%",background:t.color}}/>
               <span style={{fontSize:14,fontWeight:700}}>{t.title}</span>
             </div>
             <button className="btn bg bic bsm" onClick={()=>setModal(null)}><Ic n="x" sz={13}/></button>
           </div>
-          <div style={{color:"var(--t2)",fontSize:13,lineHeight:2.1}}>
+          <div style={{color:"var(--t2)",fontSize:13,lineHeight:2.1,background:"var(--s1)",borderRadius:8,padding:"10px 14px",marginBottom:12}}>
             <div>📅 {t.date}</div>
-            <div>⏰ {t.hour}:00 — {t.hour+t.dur}:00 ({t.dur} saat)</div>
-            <div>{t.done?"✅ Tamamlandı":"⏳ Bekliyor"}</div>
+            <div>⏰ {st} — {et}</div>
+            {t.priority&&<div>{PL[t.priority]}</div>}
+            {t.recurring&&t.recurring!=="none"&&<div>🔁 {t.recurring==="daily"?"Her gün":t.recurring==="weekly"?"Her hafta":"Her ay"}</div>}
+            {t.desc&&<div style={{marginTop:6,paddingTop:6,borderTop:"1px solid var(--b1)",color:"var(--t3)"}}>{t.desc}</div>}
           </div>
-          <div style={{display:"flex",gap:7,marginTop:16}}>
-            <button className="btn bgreen" style={{flex:1}} onClick={()=>{ setTasks(ts=>ts.map(x=>x.id===t.id?{...x,done:!x.done}:x)); setModal(null) }}>
+          <div style={{display:"flex",gap:7}}>
+            <button className="btn bg bsm" style={{flex:1}} onClick={()=>setModal("editTask")}>✏️ Düzenle</button>
+            <button className="btn bgreen" style={{flex:1}} onClick={()=>{setTasks(ts=>ts.map(x=>x.id===t.id?{...x,done:!x.done}:x));setModal(null)}}>
               {t.done?"⬜ Geri Al":"✅ Tamamla"}
             </button>
-            <button className="btn bd" onClick={()=>{ setTasks(ts=>ts.filter(x=>x.id!==t.id)); setModal(null) }}><Ic n="trash" sz={13}/></button>
+            <button className="btn bd" onClick={()=>{setTasks(ts=>ts.filter(x=>x.id!==t.id));setModal(null)}}><Ic n="trash" sz={13}/></button>
           </div>
         </div>
       </div>
     )
   }
 
-  /* Generic forms */
+  /* ── FORM MODALLER ── */
   const CFGS = {
-    task:{title:"Yeni Görev Ekle",sub:()=>{
-      setTasks(ts=>[...ts,{id:uid(),title:f.title||"Görev",date:f.date||dk(t0),hour:parseInt(f.hour)||9,dur:parseInt(f.dur)||1,done:false,color:f.color||"#4fa3ff"}])
+    task:{ title:"Görev Ekle", sub:()=>{
+      const st=f.startTime||"09:00", et=f.endTime||"10:00"
+      const base={id:uid(),title:f.title||"Görev",date:f.date||dk(t0),startTime:st,endTime:et,
+        hour:parseInt(st.split(":")[0]),dur:Math.max(1,Math.round((timeToMins(et)-timeToMins(st))/60)),
+        done:false,color:f.color||"#4fa3ff",desc:f.desc||"",priority:f.priority||"medium",recurring:f.recurring||"none"}
+      const arr=[], bd=new Date(f.date||dk(t0))
+      if(base.recurring==="none") arr.push({...base,id:uid()})
+      else if(base.recurring==="daily")   for(let i=0;i<30;i++) arr.push({...base,id:uid(),date:dk(add(bd,i))})
+      else if(base.recurring==="weekly")  for(let i=0;i<8;i++)  arr.push({...base,id:uid(),date:dk(add(bd,i*7))})
+      else if(base.recurring==="monthly") for(let i=0;i<6;i++){const d=new Date(bd);d.setMonth(d.getMonth()+i);arr.push({...base,id:uid(),date:dk(d)})}
+      setTasks(ts=>[...ts,...arr])
     }},
-    note:{title:"Yeni Not",sub:()=>{
+    editTask:{ title:"Görevi Düzenle", sub:()=>{
+      setTasks(ts=>ts.map(t=>{
+        if(t.id!==modalTask?.id) return t
+        const st=f.startTime||t.startTime||"09:00"
+        const et=f.endTime||t.endTime||"10:00"
+        return {...t,
+          title:f.title||t.title,
+          date:f.date||t.date,
+          startTime:st, endTime:et,
+          hour:parseInt(st.split(":")[0]),
+          dur:Math.max(1,Math.round((timeToMins(et)-timeToMins(st))/60)),
+          desc:f.desc!==undefined?f.desc:t.desc,
+          priority:f.priority||t.priority,
+          color:f.color||t.color,
+        }
+      }))
+    }},
+    note:{ title:"Yeni Not", sub:()=>{
       const id=uid(), fid=parseInt(f.fid)||selFolder
-      const n={id,fid,title:f.title||"Yeni Not",tags:(f.tags||"").split(",").map(t=>t.trim()).filter(Boolean),ts:0,upd:"Bugün",body:`# ${f.title||"Yeni Not"}\n\nİçerik buraya...`}
-      setNotes(ns=>[...ns,n]); setSelFolder(fid)
-      setSelNote(n); setEditTxt(n.body); setEditTitle(n.title); setEditMode(true)
+      const body=`# ${f.title||"Yeni Not"}\n\n${NOTE_TPLS[tpl]?.body||""}`
+      const n={id,fid,title:f.title||"Yeni Not",tags:(f.tags||"").split(",").map(t=>t.trim()).filter(Boolean),ts:0,upd:"Bugün",body}
+      setNotes(ns=>[...ns,n]); setSelFolder(fid); setSelNote(n); setEditTxt(n.body); setEditTitle(n.title); setEditMode(true)
     }},
-    folder:{title:"Yeni Klasör",sub:()=>{
+    folder:{ title:"Yeni Klasör", sub:()=>{
       setFolders(fs=>[...fs,{id:uid(),name:f.name||"Klasör",pid:f.pid?Number(f.pid):null}])
     }},
-    goal:{title:"Yeni Hedef",sub:()=>{
+    goal:{ title:"Yeni Hedef", sub:()=>{
       setGoals(gs=>[...gs,{id:uid(),title:f.title||"Hedef",target:parseFloat(f.target)||10,cur:0,color:f.color||"#4fa3ff"}])
     }},
   }
-  const cfg=CFGS[modal]
-  if (!cfg) return null
-
+  const cfg = CFGS[modal]; if(!cfg) return null
   const submit = ()=>{ cfg.sub(); setModal(null) }
 
   return (
@@ -323,27 +452,80 @@ function Modal() {
       <div className="mdl" onClick={e=>e.stopPropagation()}>
         <div className="mt">{cfg.title}</div>
 
+        {/* GÖREV EKLE */}
         {modal==="task"&&<>
           <div className="fg"><label className="fl">Görev Adı</label>
             <input className="fi2" placeholder="Veri Yapıları çalış..." value={f.title||""} onChange={e=>upd("title",e.target.value)}/></div>
           <div className="fg"><label className="fl">Tarih</label>
             <input className="fi2" type="date" value={f.date||dk(t0)} onChange={e=>upd("date",e.target.value)}/></div>
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-            <div className="fg"><label className="fl">Saat (0-23)</label>
-              <input className="fi2" type="number" min="0" max="23" placeholder="9" value={f.hour||""} onChange={e=>upd("hour",e.target.value)}/></div>
-            <div className="fg"><label className="fl">Süre (saat)</label>
-              <input className="fi2" type="number" min="1" max="8" placeholder="1" value={f.dur||""} onChange={e=>upd("dur",e.target.value)}/></div>
+            <div className="fg"><label className="fl">Başlangıç</label>
+              <input className="fi2" type="time" value={f.startTime||"09:00"} onChange={e=>upd("startTime",e.target.value)}/></div>
+            <div className="fg"><label className="fl">Bitiş</label>
+              <input className="fi2" type="time" value={f.endTime||"10:00"} onChange={e=>upd("endTime",e.target.value)}/></div>
+          </div>
+          <div className="fg"><label className="fl">Açıklama</label>
+            <textarea className="fi2" rows={2} placeholder="Görev açıklaması..." value={f.desc||""} onChange={e=>upd("desc",e.target.value)} style={{resize:"none"}}/></div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+            <div className="fg"><label className="fl">Öncelik</label>
+              <select className="fi2" value={f.priority||"medium"} onChange={e=>upd("priority",e.target.value)}>
+                <option value="high">🔴 Yüksek</option>
+                <option value="medium">🟡 Orta</option>
+                <option value="low">🟢 Düşük</option>
+              </select></div>
+            <div className="fg"><label className="fl">Tekrar</label>
+              <select className="fi2" value={f.recurring||"none"} onChange={e=>upd("recurring",e.target.value)}>
+                <option value="none">Yok</option>
+                <option value="daily">Her Gün</option>
+                <option value="weekly">Her Hafta</option>
+                <option value="monthly">Her Ay</option>
+              </select></div>
           </div>
           <div className="fg"><label className="fl">Renk</label>
             <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:4}}>
-              {COLORS.map(c=>(
-                <div key={c} onClick={()=>upd("color",c)} style={{width:24,height:24,borderRadius:"50%",background:c,cursor:"pointer",outline:f.color===c?"3px solid white":"3px solid transparent",transition:".1s"}}/>
-              ))}
-            </div>
-          </div>
+              {COLORS.map(c=><div key={c} onClick={()=>upd("color",c)} style={{width:24,height:24,borderRadius:"50%",background:c,cursor:"pointer",outline:f.color===c?"3px solid white":"3px solid transparent",transition:".1s"}}/>)}
+            </div></div>
         </>}
 
+        {/* GÖREV DÜZENLE */}
+        {modal==="editTask"&&modalTask&&(()=>{
+          const t=modalTask
+          return <>
+            <div className="fg"><label className="fl">Görev Adı</label>
+              <input className="fi2" defaultValue={t.title} onChange={e=>upd("title",e.target.value)}/></div>
+            <div className="fg"><label className="fl">Tarih</label>
+              <input className="fi2" type="date" defaultValue={t.date} onChange={e=>upd("date",e.target.value)}/></div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+              <div className="fg"><label className="fl">Başlangıç</label>
+                <input className="fi2" type="time" defaultValue={t.startTime||`${String(t.hour||9).padStart(2,"0")}:00`} onChange={e=>upd("startTime",e.target.value)}/></div>
+              <div className="fg"><label className="fl">Bitiş</label>
+                <input className="fi2" type="time" defaultValue={t.endTime||`${String((t.hour||9)+(t.dur||1)).padStart(2,"0")}:00`} onChange={e=>upd("endTime",e.target.value)}/></div>
+            </div>
+            <div className="fg"><label className="fl">Açıklama</label>
+              <textarea className="fi2" rows={2} defaultValue={t.desc||""} onChange={e=>upd("desc",e.target.value)} style={{resize:"none"}}/></div>
+            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+              <div className="fg"><label className="fl">Öncelik</label>
+                <select className="fi2" defaultValue={t.priority||"medium"} onChange={e=>upd("priority",e.target.value)}>
+                  <option value="high">🔴 Yüksek</option>
+                  <option value="medium">🟡 Orta</option>
+                  <option value="low">🟢 Düşük</option>
+                </select></div>
+            </div>
+            <div className="fg"><label className="fl">Renk</label>
+              <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:4}}>
+                {COLORS.map(c=><div key={c} onClick={()=>upd("color",c)} style={{width:24,height:24,borderRadius:"50%",background:c,cursor:"pointer",outline:(f.color||t.color)===c?"3px solid white":"3px solid transparent",transition:".1s"}}/>)}
+              </div></div>
+          </>
+        })()}
+
+        {/* YENİ NOT */}
         {modal==="note"&&<>
+          <div className="fg"><label className="fl">Şablon</label>
+            <div style={{display:"flex",gap:5,flexWrap:"wrap",marginTop:4}}>
+              {Object.entries(NOTE_TPLS).map(([k,v])=>(
+                <div key={k} onClick={()=>setTpl(k)} style={{padding:"4px 10px",borderRadius:6,border:`1px solid ${tpl===k?"var(--acc)":"var(--b1)"}`,background:tpl===k?"rgba(79,163,255,.1)":"var(--s1)",cursor:"pointer",fontSize:12,color:tpl===k?"var(--acc)":"var(--t2)",transition:".1s"}}>{v.name}</div>
+              ))}
+            </div></div>
           <div className="fg"><label className="fl">Not Başlığı</label>
             <input className="fi2" placeholder="Binary Tree..." value={f.title||""} onChange={e=>upd("title",e.target.value)}/></div>
           <div className="fg"><label className="fl">Klasör</label>
@@ -354,6 +536,7 @@ function Modal() {
             <input className="fi2" placeholder="tree, algoritma" value={f.tags||""} onChange={e=>upd("tags",e.target.value)}/></div>
         </>}
 
+        {/* YENİ KLASÖR */}
         {modal==="folder"&&<>
           <div className="fg"><label className="fl">Klasör Adı</label>
             <input className="fi2" placeholder="Algoritma..." value={f.name||""} onChange={e=>upd("name",e.target.value)}/></div>
@@ -364,6 +547,7 @@ function Modal() {
             </select></div>
         </>}
 
+        {/* YENİ HEDEF */}
         {modal==="goal"&&<>
           <div className="fg"><label className="fl">Hedef Adı</label>
             <input className="fi2" placeholder="Haftalık 25 saat..." value={f.title||""} onChange={e=>upd("title",e.target.value)}/></div>
@@ -371,15 +555,14 @@ function Modal() {
             <input className="fi2" type="number" placeholder="25" value={f.target||""} onChange={e=>upd("target",e.target.value)}/></div>
           <div className="fg"><label className="fl">Renk</label>
             <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:4}}>
-              {COLORS.map(c=>(
-                <div key={c} onClick={()=>upd("color",c)} style={{width:24,height:24,borderRadius:"50%",background:c,cursor:"pointer",outline:f.color===c?"3px solid white":"3px solid transparent",transition:".1s"}}/>
-              ))}
-            </div>
-          </div>
+              {COLORS.map(c=><div key={c} onClick={()=>upd("color",c)} style={{width:24,height:24,borderRadius:"50%",background:c,cursor:"pointer",outline:f.color===c?"3px solid white":"3px solid transparent",transition:".1s"}}/>)}
+            </div></div>
         </>}
 
         <div style={{display:"flex",gap:8,marginTop:6}}>
-          <button className="btn bp" style={{flex:1}} onClick={submit}>Ekle</button>
+          <button className="btn bp" style={{flex:1}} onClick={submit}>
+            {modal==="editTask"?"Kaydet":"Ekle"}
+          </button>
           <button className="btn bg" onClick={()=>setModal(null)}>İptal</button>
         </div>
       </div>
@@ -503,58 +686,109 @@ function TimerPage() {
 
 /* ═══════════════════════════════════════════════════════ STATS PAGE */
 function StatsPage() {
+  const {tasks} = useContext(Ctx)
   const [tab,setTab] = useState("weekly")
-  const wData = useMemo(()=>DNS.map((d,i)=>({day:d,h:[2.1,3.4,4.1,2.8,3.9,1.2,0.8][i]})),[])
-  const sData = useMemo(()=>[{name:"Veri Yapıları",h:5.5,c:"#4fa3ff"},{name:"OOP",h:2.2,c:"#7c6bff"},{name:"Veritabanı",h:0.8,c:"#ff6fa8"},{name:"Algoritma",h:3.4,c:"#2edc8a"}],[])
-  const heat  = useMemo(()=>Array.from({length:35},()=>{ const v=Math.random()>.3?Math.random():0; return{v,op:v===0?.06:.15+v*.8} }),[])
+
+  const wData = useMemo(()=>{
+    const ws=new Date(t0); ws.setDate(t0.getDate()-((t0.getDay()+6)%7))
+    return DNS.map((d,i)=>{
+      const day=add(ws,i), key=dk(day)
+      const dayAll=tasks.filter(t=>t.date===key)
+      const dayDone=dayAll.filter(t=>t.done)
+      const h=dayDone.reduce((s,t)=>{
+        const sm=getStartMins(t),em=getEndMins(t); return s+(em-sm)/60
+      },0)
+      return {day:d, h:Math.round(h*10)/10, total:dayAll.length, done:dayDone.length}
+    })
+  },[tasks])
+
+  const sData = useMemo(()=>{
+    const map={}
+    tasks.filter(t=>t.done).forEach(t=>{
+      const h=(getEndMins(t)-getStartMins(t))/60
+      if(!map[t.color]) map[t.color]={h:0,color:t.color,count:0}
+      map[t.color].h+=h; map[t.color].count++
+    })
+    return Object.values(map).sort((a,b)=>b.h-a.h).slice(0,6)
+  },[tasks])
+
+  const totalDone = tasks.filter(t=>t.done).length
+  const totalH = tasks.filter(t=>t.done).reduce((s,t)=>(s+(getEndMins(t)-getStartMins(t))/60),0)
+  const heat = useMemo(()=>{
+    return Array.from({length:35},(_,i)=>{
+      const day=add(new Date(t0.getTime()-35*86400000),i), key=dk(day)
+      const done=tasks.filter(t=>t.date===key&&t.done).length
+      const op=done===0?.05:Math.min(.15+done*.15,.95)
+      return {op,done}
+    })
+  },[tasks])
 
   return (
     <div className="cnt fade">
       <div className="tabs">
-        {[["weekly","Haftalık"],["subjects","Dersler"],["heatmap","Takvim"]].map(([v,l])=>(
+        {[["weekly","Haftalık"],["subjects","Görevler"],["heatmap","Takvim"]].map(([v,l])=>(
           <div key={v} className={`stab${tab===v?" on":""}`} onClick={()=>setTab(v)}>{l}</div>
         ))}
       </div>
 
       {tab==="weekly"&&(
-        <div className="g2">
-          <div className="card">
-            <div className="sh">Günlük Çalışma</div>
-            <ResponsiveContainer width="100%" height={190}>
-              <BarChart data={wData} barSize={22}>
-                <XAxis dataKey="day" tick={{fill:"var(--t3)",fontSize:11,fontFamily:"Syne"}} axisLine={false} tickLine={false}/>
-                <YAxis tick={{fill:"var(--t3)",fontSize:11}} axisLine={false} tickLine={false}/>
-                <Tooltip contentStyle={{background:"var(--bg3)",border:"1px solid var(--b1)",borderRadius:6,fontSize:12}} formatter={v=>[`${v.toFixed(1)} saat`]}/>
-                <Bar dataKey="h" radius={[4,4,0,0]}>
-                  {wData.map((_,i)=><Cell key={i} fill={i===4?"var(--acc)":i%2===0?"var(--acc2)":"var(--s2)"}/>)}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+        <>
+          <div className="g4" style={{marginBottom:14}}>
+            {[
+              {l:"Bu Hafta",v:`${wData.reduce((s,d)=>s+d.h,0).toFixed(1)}s`,c:"#4fa3ff"},
+              {l:"Tamamlanan",v:`${wData.reduce((s,d)=>s+d.done,0)} görev`,c:"#2edc8a"},
+              {l:"Toplam Saat",v:`${totalH.toFixed(1)}s`,c:"#ffaa3d"},
+              {l:"Tamamlanan",v:`${totalDone} görev`,c:"#ff6fa8"},
+            ].map((x,i)=>(
+              <div key={i} className="card" style={{textAlign:"center",padding:12}}>
+                <div style={{fontSize:20,fontWeight:800,color:x.c}}>{x.v}</div>
+                <div style={{fontSize:10,color:"var(--t3)",marginTop:3}}>{x.l}</div>
+              </div>
+            ))}
           </div>
-          <div className="card">
-            <div className="sh">Haftalık Trend</div>
-            <ResponsiveContainer width="100%" height={190}>
-              <LineChart data={wData}>
-                <XAxis dataKey="day" tick={{fill:"var(--t3)",fontSize:11,fontFamily:"Syne"}} axisLine={false} tickLine={false}/>
-                <YAxis tick={{fill:"var(--t3)",fontSize:11}} axisLine={false} tickLine={false}/>
-                <Tooltip contentStyle={{background:"var(--bg3)",border:"1px solid var(--b1)",borderRadius:6,fontSize:12}} formatter={v=>[`${v.toFixed(1)} saat`]}/>
-                <Line type="monotone" dataKey="h" stroke="var(--acc3)" strokeWidth={2.5} dot={{fill:"var(--acc3)",r:4}}/>
-              </LineChart>
-            </ResponsiveContainer>
+          <div className="g2">
+            <div className="card">
+              <div className="sh">Günlük Çalışma (Saat)</div>
+              <ResponsiveContainer width="100%" height={190}>
+                <BarChart data={wData} barSize={22}>
+                  <XAxis dataKey="day" tick={{fill:"var(--t3)",fontSize:11,fontFamily:"Syne"}} axisLine={false} tickLine={false}/>
+                  <YAxis tick={{fill:"var(--t3)",fontSize:11}} axisLine={false} tickLine={false}/>
+                  <Tooltip contentStyle={{background:"var(--bg3)",border:"1px solid var(--b1)",borderRadius:6,fontSize:12}} formatter={(v,n)=>[n==="h"?`${v.toFixed(1)} saat`:`${v} görev`,n==="h"?"Süre":"Tamamlanan"]}/>
+                  <Bar dataKey="h" name="h" radius={[4,4,0,0]}>
+                    {wData.map((_,i)=><Cell key={i} fill={dk(add(new Date(t0.getTime()-((t0.getDay()+6)%7)*86400000),i))===dk(t0)?"var(--acc)":"var(--s2)"}/>)}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="card">
+              <div className="sh">Tamamlanan Görev</div>
+              <ResponsiveContainer width="100%" height={190}>
+                <BarChart data={wData} barSize={22}>
+                  <XAxis dataKey="day" tick={{fill:"var(--t3)",fontSize:11,fontFamily:"Syne"}} axisLine={false} tickLine={false}/>
+                  <YAxis tick={{fill:"var(--t3)",fontSize:11}} axisLine={false} tickLine={false}/>
+                  <Tooltip contentStyle={{background:"var(--bg3)",border:"1px solid var(--b1)",borderRadius:6,fontSize:12}} formatter={v=>[`${v} görev`]}/>
+                  <Bar dataKey="done" radius={[4,4,0,0]} fill="var(--green)"/>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
           </div>
-        </div>
+        </>
       )}
 
       {tab==="subjects"&&(
         <div className="card">
-          <div className="sh">Ders Bazlı Dağılım</div>
-          {sData.map(s=>(
-            <div key={s.name} style={{marginBottom:15}}>
+          <div className="sh">Renk Bazlı Görev Dağılımı</div>
+          {sData.length===0&&<div style={{color:"var(--t3)",fontSize:13,padding:"12px 0"}}>Henüz tamamlanan görev yok</div>}
+          {sData.map((s,i)=>(
+            <div key={i} style={{marginBottom:15}}>
               <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
-                <span style={{fontSize:13,fontWeight:600}}>{s.name}</span>
-                <span style={{fontSize:12,fontWeight:700,color:s.c,fontFamily:"JetBrains Mono"}}>{s.h}s</span>
+                <div style={{display:"flex",alignItems:"center",gap:8}}>
+                  <div style={{width:10,height:10,borderRadius:"50%",background:s.color}}/>
+                  <span style={{fontSize:13,fontWeight:600}}>{s.count} görev</span>
+                </div>
+                <span style={{fontSize:12,fontWeight:700,color:s.color,fontFamily:"JetBrains Mono"}}>{s.h.toFixed(1)}s</span>
               </div>
-              <div className="pbar"><div className="pf" style={{width:`${(s.h/6)*100}%`,background:s.c}}/></div>
+              <div className="pbar"><div className="pf" style={{width:`${Math.min((s.h/Math.max(totalH,1))*100,100)}%`,background:s.color}}/></div>
             </div>
           ))}
         </div>
@@ -562,14 +796,21 @@ function StatsPage() {
 
       {tab==="heatmap"&&(
         <div className="card">
-          <div className="sh">Çalışma Takvimi (Son 35 Gün)</div>
+          <div className="sh">Tamamlanan Görev Takvimi (Son 35 Gün)</div>
           <div className="hmap">
-            {heat.map((c,i)=><div key={i} className="hcell" style={{background:`rgba(79,163,255,${c.op})`}} title={c.v>0?`${(c.v*5).toFixed(1)} saat`:"Çalışılmadı"}/>)}
+            {heat.map((c,i)=>(
+              <div key={i} className="hcell" style={{background:`rgba(79,163,255,${c.op})`}} title={c.done>0?`${c.done} görev tamamlandı`:"Tamamlanan görev yok"}/>
+            ))}
           </div>
           <div className="g4" style={{marginTop:13}}>
-            {[{l:"Streak",v:"🔥 5",c:"#ff6fa8"},{l:"Bu Hafta",v:"18.3s",c:"#4fa3ff"},{l:"Günlük Ort.",v:"3.2s",c:"#2edc8a"},{l:"Bu Ay",v:"64.1s",c:"#ffaa3d"}].map((x,i)=>(
+            {[
+              {l:"Bu Hafta",v:`${wData.reduce((s,d)=>s+d.done,0)}`,c:"#4fa3ff"},
+              {l:"Toplam Süre",v:`${totalH.toFixed(1)}s`,c:"#ffaa3d"},
+              {l:"Tamamlanan",v:`${totalDone}`,c:"#2edc8a"},
+              {l:"Bekleyen",v:`${tasks.filter(t=>!t.done).length}`,c:"#ff6fa8"},
+            ].map((x,i)=>(
               <div key={i} className="card" style={{textAlign:"center",padding:11}}>
-                <div style={{fontSize:17,fontWeight:800,color:x.c}}>{x.v}</div>
+                <div style={{fontSize:18,fontWeight:800,color:x.c}}>{x.v}</div>
                 <div style={{fontSize:10,color:"var(--t3)",marginTop:3}}>{x.l}</div>
               </div>
             ))}
@@ -582,30 +823,109 @@ function StatsPage() {
 
 /* ═══════════════════════════════════════════════════════ CALENDAR PAGE */
 function CalendarPage() {
-  const {tasks,setTasks,setModal,setModalTask} = useContext(Ctx)
-  const [view,setView]   = useState("week")
-  const [cal,setCal]     = useState(new Date(t0))
-  const dragRef          = useRef(null)   // task id being dragged
-  const [dropKey,setDropKey] = useState(null) // visual feedback only
+  const {tasks,setTasks,setModal,setModalTask,modalTask} = useContext(Ctx)
+  const [view,setView]     = useState("week")
+  const [cal,setCal]       = useState(new Date(t0))
+
+  // Drag state
+  const dragInfo   = useRef(null) // {id, offsetMins}
+  const [ghostPos, setGhostPos] = useState(null) // {col, topPx, height}
+  const [dropKey,  setDropKey]  = useState(null)
+
+  const SNAP = 15 // dakika snap
+  const PX_PER_MIN = 1 // 60px/saat → 1px/min
 
   const ws = useMemo(()=>{ const d=new Date(cal); d.setDate(cal.getDate()-((cal.getDay()+6)%7)); d.setHours(0,0,0,0); return d },[cal])
   const weekDays = useMemo(()=>Array.from({length:7},(_,i)=>add(ws,i)),[ws])
-
   const ms  = new Date(cal.getFullYear(),cal.getMonth(),1)
   const gs  = useMemo(()=>{ const d=new Date(ms); d.setDate(1-((ms.getDay()+6)%7)); return d },[ms])
   const mcs = useMemo(()=>Array.from({length:42},(_,i)=>add(gs,i)),[gs])
 
   const prev=()=>setCal(d=>{ const r=new Date(d); view==="week"?r.setDate(r.getDate()-7):r.setMonth(r.getMonth()-1); return r })
   const next=()=>setCal(d=>{ const r=new Date(d); view==="week"?r.setDate(r.getDate()+7):r.setMonth(r.getMonth()+1); return r })
-
   const title = view==="week"
     ? `${weekDays[0].toLocaleDateString("tr-TR",{day:"numeric",month:"short"})} – ${weekDays[6].toLocaleDateString("tr-TR",{day:"numeric",month:"short",year:"numeric"})}`
     : cal.toLocaleDateString("tr-TR",{month:"long",year:"numeric"})
 
-  const onDS=(e,id)=>{ dragRef.current=id; e.dataTransfer.effectAllowed="move"; e.dataTransfer.setData("id",String(id)) }
-  const onDE=()=>{ dragRef.current=null; setDropKey(null) }
-  const dropMonth=(e,date)=>{ e.preventDefault(); const id=Number(e.dataTransfer.getData("id")); if(id) setTasks(ts=>ts.map(t=>t.id===id?{...t,date:dk(date)}:t)); onDE() }
-  const dropWeek=(e,date,hour)=>{ e.preventDefault(); const id=Number(e.dataTransfer.getData("id")); if(id) setTasks(ts=>ts.map(t=>t.id===id?{...t,date:dk(date),hour}:t)); onDE() }
+  const HDR_H = 46   // header px
+  const START_H = 7  // 07:00
+
+  const minsToTop = mins => HDR_H + (mins - START_H*60) * PX_PER_MIN
+  const topToMins = (top, colEl) => {
+    const rect = colEl.getBoundingClientRect()
+    const relY  = top - rect.top
+    const mins  = START_H*60 + relY / PX_PER_MIN
+    return Math.round(mins / SNAP) * SNAP
+  }
+
+  const fmtTime = m => `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`
+
+  /* ── WEEK DRAG handlers ── */
+  const onBlockMouseDown = (e, task) => {
+    e.preventDefault(); e.stopPropagation()
+    const blockTop = minsToTop(getStartMins(task))
+    const clickY   = e.clientY
+    const colEl    = e.currentTarget.closest(".wdcol")
+    const rect     = colEl?.getBoundingClientRect()
+    const relY     = rect ? clickY - rect.top : 0
+    const clickMins = START_H*60 + relY / PX_PER_MIN
+    const offsetMins = clickMins - getStartMins(task)
+    dragInfo.current = { id:task.id, offsetMins, task }
+
+    const onMove = ev => {
+      const col = document.elementFromPoint(ev.clientX, ev.clientY)?.closest(".wdcol")
+      if (!col) return
+      const rect2 = col.getBoundingClientRect()
+      const relY2 = ev.clientY - rect2.top
+      let newStartMins = START_H*60 + relY2/PX_PER_MIN - offsetMins
+      newStartMins = Math.round(newStartMins/SNAP)*SNAP
+      newStartMins = Math.max(START_H*60, Math.min(23*60, newStartMins))
+      const dur = getEndMins(task) - getStartMins(task)
+      const colIdx = parseInt(col.dataset.colidx||"0")
+      setGhostPos({ colIdx, topPx: minsToTop(newStartMins), height: dur*PX_PER_MIN, startMins: newStartMins, dur })
+      setDropKey(`col-${colIdx}-${newStartMins}`)
+    }
+
+    const onUp = ev => {
+      if (ghostPos || dropKey) {
+        const col = document.elementFromPoint(ev.clientX, ev.clientY)?.closest(".wdcol")
+        if (col) {
+          const rect2 = col.getBoundingClientRect()
+          const relY2 = ev.clientY - rect2.top
+          let newSm = START_H*60 + relY2/PX_PER_MIN - offsetMins
+          newSm = Math.round(newSm/SNAP)*SNAP
+          newSm = Math.max(START_H*60, Math.min(23*60-15, newSm))
+          const dur2 = getEndMins(task)-getStartMins(task)
+          const newEm = newSm+dur2
+          const dayIdx = parseInt(col.dataset.colidx||"0")
+          const newDate = dk(weekDays[dayIdx])
+          setTasks(ts=>ts.map(t=>t.id===task.id?{
+            ...t, date:newDate,
+            startTime:fmtTime(newSm), endTime:fmtTime(newEm),
+            hour:Math.floor(newSm/60), dur:Math.ceil(dur2/60)
+          }:t))
+        }
+      }
+      setGhostPos(null); setDropKey(null); dragInfo.current=null
+      window.removeEventListener("mousemove",onMove)
+      window.removeEventListener("mouseup",onUp)
+    }
+
+    window.addEventListener("mousemove",onMove)
+    window.addEventListener("mouseup",onUp)
+  }
+
+  /* ── MONTH drag (HTML5) ── */
+  const onDS=(e,id)=>{ dragInfo.current={id}; e.dataTransfer.effectAllowed="move"; e.dataTransfer.setData("id",String(id)) }
+  const onDE=()=>{ dragInfo.current=null; setDropKey(null) }
+  const dropMonth=(e,date)=>{
+    e.preventDefault()
+    const id=Number(e.dataTransfer.getData("id"))
+    if(id) setTasks(ts=>ts.map(t=>t.id===id?{...t,date:dk(date)}:t))
+    onDE()
+  }
+
+  const ghostTask = ghostPos && dragInfo.current ? tasks.find(t=>t.id===dragInfo.current.id) : null
 
   return (
     <div className="cwrap">
@@ -638,13 +958,17 @@ function CalendarPage() {
                   onDoubleClick={()=>setModal("task")}
                 >
                   <div className={`mdn${isT?" td":""}`}>{cell.getDate()}</div>
-                  {ct.slice(0,3).map(t=>(
-                    <div key={t.id} className={`chip${t.done?" cdone":""}`}
-                      style={{background:t.color+"25",color:t.color,borderColor:t.color+"40"}}
-                      draggable onDragStart={e=>onDS(e,t.id)} onDragEnd={onDE}
-                      onClick={e=>{e.stopPropagation();setModalTask(t);setModal("td")}}
-                    >{t.hour}:00 {t.title}</div>
-                  ))}
+                  {ct.slice(0,3).map(t=>{
+                    const st=t.startTime||`${String(t.hour||9).padStart(2,"0")}:00`
+                    return (
+                      <div key={t.id} className={`chip${t.done?" cdone":""}`}
+                        style={{background:t.color+"25",color:t.color,borderColor:t.color+"40",
+                          borderLeft:`3px solid ${t.priority?PC[t.priority]:t.color}`}}
+                        draggable onDragStart={e=>onDS(e,t.id)} onDragEnd={onDE}
+                        onClick={e=>{e.stopPropagation();setModalTask(t);setModal("td")}}
+                      >{st} {t.title}{t.recurring&&t.recurring!=="none"?" 🔁":""}</div>
+                    )
+                  })}
                   {ct.length>3&&<div style={{fontSize:10,color:"var(--t3)",padding:"1px 5px"}}>+{ct.length-3}</div>}
                 </div>
               )
@@ -656,13 +980,15 @@ function CalendarPage() {
       {/* ── WEEK ── */}
       {view==="week"&&(
         <div className="wout">
+          {/* Time col */}
           <div className="wtimecol">
             <div className="wthdr"/>
             {HRS.map(h=><div key={h} className="wts">{String(h).padStart(2,"0")}:00</div>)}
           </div>
+          {/* Day cols */}
           <div className="wscroll">
             <div className="winner">
-              {/* headers */}
+              {/* Headers */}
               <div className="wdhrow">
                 {weekDays.map((day,di)=>{
                   const isT=dk(day)===dk(t0)
@@ -674,32 +1000,74 @@ function CalendarPage() {
                   )
                 })}
               </div>
-              {/* columns */}
+              {/* Columns */}
               {weekDays.map((day,di)=>{
                 const key=dk(day), dt=tasks.filter(t=>t.date===key)
                 return (
-                  <div key={di} className="wdcol" style={{gridColumn:di+1,gridRow:2}}>
-                    {HRS.map(h=>{
-                      const hk=`${key}-${h}`
-                      return (
-                        <div key={h} className={`whour${dropKey===hk?" dov":""}`}
-                          onDragOver={e=>{e.preventDefault();setDropKey(hk)}}
-                          onDragLeave={()=>setDropKey(null)}
-                          onDrop={e=>dropWeek(e,day,h)}
-                          onDoubleClick={()=>setModal("task")}
-                        />
-                      )
-                    })}
-                    {dt.map(t=>(
-                      <div key={t.id} className="wblock"
-                        style={{top:46+(t.hour-7)*60,height:Math.max(t.dur*60-4,26),background:t.color+"20",color:t.color,borderLeftColor:t.color}}
-                        draggable onDragStart={e=>onDS(e,t.id)} onDragEnd={onDE}
-                        onClick={()=>{setModalTask(t);setModal("td")}}
+                  <div key={di} className="wdcol" data-colidx={di} style={{gridColumn:di+1,gridRow:2}}>
+                    {/* Hour lines */}
+                    {HRS.map(h=>(
+                      <div key={h} className="whour"
+                        onDoubleClick={()=>{
+                          setModalTask(null)
+                          setModal("task")
+                        }}
                       >
-                        <div style={{fontWeight:700,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{t.title}</div>
-                        {t.dur*60>38&&<div style={{fontSize:10,opacity:.7}}>{t.hour}:00 · {t.dur}s</div>}
+                        {/* 15 min snap lines */}
+                        {[15,30,45].map(m=>(
+                          <div key={m} style={{position:"absolute",left:0,right:0,top:m,borderBottom:"1px dashed rgba(37,60,94,.2)",pointerEvents:"none"}}/>
+                        ))}
                       </div>
                     ))}
+
+                    {/* Ghost block while dragging */}
+                    {ghostPos && ghostPos.colIdx===di && ghostTask&&(
+                      <div style={{
+                        position:"absolute",left:3,right:3,
+                        top:ghostPos.topPx, height:Math.max(ghostPos.height-3,20),
+                        background:ghostTask.color+"40",
+                        border:`2px dashed ${ghostTask.color}`,
+                        borderRadius:5, pointerEvents:"none", zIndex:20,
+                        display:"flex",alignItems:"center",padding:"0 6px"
+                      }}>
+                        <span style={{fontSize:11,fontWeight:700,color:ghostTask.color}}>
+                          {fmtTime(ghostPos.startMins)} – {fmtTime(ghostPos.startMins+ghostPos.dur)}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Task blocks */}
+                    {dt.map(t=>{
+                      const sm=getStartMins(t), em=getEndMins(t)
+                      const topPx=minsToTop(sm)
+                      const height=Math.max((em-sm)*PX_PER_MIN-3, 22)
+                      const st=t.startTime||`${String(t.hour||9).padStart(2,"0")}:00`
+                      const et=t.endTime||`${String((t.hour||9)+(t.dur||1)).padStart(2,"0")}:00`
+                      const isGhost = dragInfo.current?.id===t.id && ghostPos
+                      return (
+                        <div key={t.id}
+                          style={{
+                            position:"absolute",left:3,right:3,
+                            top:topPx, height,
+                            background: isGhost ? "transparent" : t.color+"22",
+                            color:t.color,
+                            borderLeft:`3px solid ${t.priority?PC[t.priority]:t.color}`,
+                            borderRadius:5, padding:"3px 6px",
+                            cursor:"grab", fontSize:11, fontWeight:600,
+                            overflow:"hidden", zIndex:5,
+                            opacity: isGhost ? 0.3 : 1,
+                            userSelect:"none", transition:"opacity .1s",
+                            boxShadow: isGhost ? "none" : "0 1px 4px rgba(0,0,0,.2)"
+                          }}
+                          onMouseDown={e=>onBlockMouseDown(e,t)}
+                          onClick={e=>{ if(!dragInfo.current?.moved){ setModalTask(t); setModal("td") } }}
+                        >
+                          <div style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{t.title}{t.recurring&&t.recurring!=="none"?" 🔁":""}</div>
+                          {height>36&&<div style={{fontSize:10,opacity:.7}}>{st}–{et}</div>}
+                          {height>52&&t.desc&&<div style={{fontSize:10,opacity:.55,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{t.desc}</div>}
+                        </div>
+                      )
+                    })}
                   </div>
                 )
               })}
@@ -723,7 +1091,9 @@ function NotesPage() {
     ? notes.filter(n=>n.title.toLowerCase().includes(search.toLowerCase())||n.body.toLowerCase().includes(search.toLowerCase()))
     : notes.filter(n=>n.fid===selFolder)
 
-  const currentFolderFiles = folderFiles.filter(f=>f.folderId===selFolder)
+  const backlinks = useMemo(()=>
+    selNote ? notes.filter(n=>n.id!==selNote.id && n.body?.includes(`[[${selNote.title}]]`)) : []
+  ,[notes,selNote])
 
   const openNote = n => { setSelNote(n); setEditTxt(n.body); setEditTitle(n.title); setEditMode(false) }
 
@@ -733,6 +1103,21 @@ function NotesPage() {
   }
 
   const del = id => { setNotes(ns=>ns.filter(n=>n.id!==id)); if(selNote?.id===id) setSelNote(null) }
+
+  const exportMd = () => {
+    if(!selNote)return
+    const blob=new Blob([selNote.body],{type:"text/markdown"})
+    const url=URL.createObjectURL(blob)
+    const a=document.createElement("a"); a.href=url; a.download=`${selNote.title}.md`; a.click()
+    URL.revokeObjectURL(url)
+  }
+
+  const exportPdf = () => {
+    if(!selNote)return
+    const w=window.open("","_blank")
+    w.document.write(`<html><head><title>${selNote.title}</title><style>body{font-family:sans-serif;padding:40px;max-width:800px;margin:0 auto}h1{font-size:24px}h2{font-size:18px}code{background:#f0f0f0;padding:2px 5px;border-radius:3px}pre{white-space:pre-wrap}</style></head><body><h1>${selNote.title}</h1><pre>${selNote.body}</pre></body></html>`)
+    w.document.close(); w.print()
+  }
 
   const handleNoteFile = (e) => {
     const file = e.target.files[0]
@@ -751,7 +1136,7 @@ function NotesPage() {
     if (!file) return
     const reader = new FileReader()
     reader.onload = (ev) => {
-      const f = {id:uid(),name:file.name,type:file.type,size:file.size,data:ev.target.result,folderId:selFolder,added:new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"short"})}
+      const f={id:uid(),name:file.name,type:file.type,size:file.size,data:ev.target.result,folderId:selFolder,added:new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"short"})}
       setFolderFiles(fs=>[...fs,f])
     }
     reader.readAsDataURL(file); e.target.value=""
@@ -766,8 +1151,11 @@ function NotesPage() {
 
   const fmtSize = b => b>1024*1024?`${(b/1024/1024).toFixed(1)}MB`:`${(b/1024).toFixed(0)}KB`
 
+  const currentFolderFiles = folderFiles.filter(f=>f.folderId===selFolder)
+
   return (
     <div className="nwrap">
+
       {/* FOLDERS */}
       <div className="fp">
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:9}}>
@@ -849,22 +1237,35 @@ function NotesPage() {
                 <button className="btn bg bsm" title="Nota Dosya Ekle" onClick={()=>noteFileRef.current?.click()}>📎</button>
                 <input ref={noteFileRef} type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={handleNoteFile}/>
                 {editMode?(
-                  <><button className="btn bp bsm" onClick={save}>Kaydet</button>
-                    <button className="btn bg bsm" onClick={()=>setEditMode(false)}>İptal</button></>
+                  <>
+                    <button className="btn bp bsm" onClick={save}>Kaydet</button>
+                    <button className="btn bg bsm" onClick={()=>setEditMode(false)}>İptal</button>
+                  </>
                 ):(
-                  <><button className="btn bg bsm" onClick={()=>setEditMode(true)}><Ic n="edit" sz={12}/></button>
-                    <button className="btn bd bsm bic" onClick={()=>del(selNote.id)}><Ic n="trash" sz={12}/></button></>
+                  <>
+                    <button className="btn bg bsm" onClick={()=>setEditMode(true)}><Ic n="edit" sz={12}/></button>
+                    <button className="btn bg bsm" title=".md indir" onClick={exportMd}>⬇ md</button>
+                    <button className="btn bg bsm" title="PDF yazdır" onClick={exportPdf}>⬇ pdf</button>
+                    <button className="btn bd bsm bic" onClick={()=>del(selNote.id)}><Ic n="trash" sz={12}/></button>
+                  </>
                 )}
               </div>
             </div>
+
             <div style={{padding:"5px 17px",borderBottom:"1px solid var(--b1)",fontSize:11,color:"var(--t3)",display:"flex",gap:12,flexShrink:0}}>
-              <span>{(selNote.ts/3600).toFixed(1)}s çalışıldı</span><span>{selNote.upd}</span>
+              <span>{(selNote.ts/3600).toFixed(1)}s çalışıldı</span>
+              <span>{selNote.upd}</span>
               {(selNote.attachments||[]).length>0&&<span>📎 {(selNote.attachments||[]).length} ek</span>}
+              {backlinks.length>0&&<span>⬅ {backlinks.length} bağlantı</span>}
             </div>
+
             <div className="ebody">
               {editMode
                 ? <textarea className="etxt" value={editTxt} onChange={e=>setEditTxt(e.target.value)}/>
-                : <div className="ep-md">{renderMd(selNote.body,title=>{ const n=notes.find(x=>x.title===title); if(n) openNote(n) })}</div>}
+                : <div className="ep-md">{renderMd(selNote.body, title=>{ const n=notes.find(x=>x.title===title); if(n) openNote(n) })}</div>
+              }
+
+              {/* EKLER */}
               {(selNote.attachments||[]).length>0&&(
                 <div style={{marginTop:20,borderTop:"1px solid var(--b1)",paddingTop:16}}>
                   <div style={{fontSize:11,fontWeight:700,color:"var(--t3)",letterSpacing:1,marginBottom:12}}>EKLER</div>
@@ -894,6 +1295,23 @@ function NotesPage() {
                   ))}
                 </div>
               )}
+
+              {/* BACKLINKLER */}
+              {backlinks.length>0&&(
+                <div style={{marginTop:20,borderTop:"1px solid var(--b1)",paddingTop:16}}>
+                  <div style={{fontSize:11,fontWeight:700,color:"var(--t3)",letterSpacing:1,marginBottom:10}}>⬅ BURAYA BAĞLANAN NOTLAR</div>
+                  {backlinks.map(n=>(
+                    <div key={n.id} onClick={()=>openNote(n)}
+                      style={{display:"flex",alignItems:"center",gap:8,padding:"7px 10px",background:"var(--s1)",border:"1px solid var(--b1)",borderRadius:6,marginBottom:5,cursor:"pointer",transition:".1s"}}
+                      onMouseOver={e=>e.currentTarget.style.borderColor="var(--acc)"}
+                      onMouseOut={e=>e.currentTarget.style.borderColor="var(--b1)"}
+                    >
+                      <span>📄</span>
+                      <span style={{fontSize:13,fontWeight:600}}>{n.title}</span>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </>
         ):(
@@ -916,6 +1334,7 @@ function NotesPage() {
           </div>
         </div>
       )}
+
     </div>
   )
 }
@@ -1040,6 +1459,15 @@ function Dashboard() {
 /* ═══════════════════════════════════════════════════════ APP */
 export default function App() {
   useEffect(()=>{ const s=document.createElement("style"); s.textContent=CSS; document.head.appendChild(s); return ()=>document.head.removeChild(s) },[])
+  useEffect(()=>{
+    const h = e => {
+      if(e.ctrlKey && e.key==="n"){ e.preventDefault(); setModal("note") }
+      if(e.ctrlKey && e.key==="t"){ e.preventDefault(); setModal("task") }
+      if(e.ctrlKey && e.key==="p"){ e.preventDefault(); setPage("timer") }
+    }
+    window.addEventListener("keydown",h); return ()=>window.removeEventListener("keydown",h)
+  },[])
+
 
   const [page,setPage]         = useState("dashboard")
   const [folders,setFolders]   = useLS("sf_fold", I_FOLD)
@@ -1143,6 +1571,7 @@ useEffect(()=>{
           <P/>
         </main>
         <Modal/>
+        <GlobalSearch/>
       </div>
     </Ctx.Provider>
   )
