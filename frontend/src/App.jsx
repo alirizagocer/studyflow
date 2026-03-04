@@ -713,22 +713,62 @@ function CalendarPage() {
 
 /* ═══════════════════════════════════════════════════════ NOTES PAGE */
 function NotesPage() {
-  const {folders,setFolders,notes,setNotes,selFolder,setSelFolder,selNote,setSelNote,editMode,setEditMode,editTxt,setEditTxt,editTitle,setEditTitle,setModal} = useContext(Ctx)
+  const {folders,setFolders,notes,setNotes,selFolder,setSelFolder,selNote,setSelNote,editMode,setEditMode,editTxt,setEditTxt,editTitle,setEditTitle,setModal,folderFiles,setFolderFiles} = useContext(Ctx)
   const [search,setSearch] = useState("")
+  const [previewFile,setPreviewFile] = useState(null)
+  const noteFileRef = useRef(null)
+  const folderFileRef = useRef(null)
 
   const filtered = search
     ? notes.filter(n=>n.title.toLowerCase().includes(search.toLowerCase())||n.body.toLowerCase().includes(search.toLowerCase()))
     : notes.filter(n=>n.fid===selFolder)
 
-  const save=()=>{
+  const currentFolderFiles = folderFiles.filter(f=>f.folderId===selFolder)
+
+  const openNote = n => { setSelNote(n); setEditTxt(n.body); setEditTitle(n.title); setEditMode(false) }
+
+  const save = () => {
     const upd={...selNote,title:editTitle,body:editTxt,upd:new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"short"})}
     setNotes(ns=>ns.map(n=>n.id===selNote.id?upd:n)); setSelNote(upd); setEditMode(false)
   }
-  const del=id=>{ setNotes(ns=>ns.filter(n=>n.id!==id)); if(selNote?.id===id) setSelNote(null) }
+
+  const del = id => { setNotes(ns=>ns.filter(n=>n.id!==id)); if(selNote?.id===id) setSelNote(null) }
+
+  const handleNoteFile = (e) => {
+    const file = e.target.files[0]
+    if (!file || !selNote) return
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const att = {id:uid(),name:file.name,type:file.type,size:file.size,data:ev.target.result}
+      const upd = {...selNote, attachments:[...(selNote.attachments||[]),att]}
+      setNotes(ns=>ns.map(n=>n.id===selNote.id?upd:n)); setSelNote(upd)
+    }
+    reader.readAsDataURL(file); e.target.value=""
+  }
+
+  const handleFolderFile = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = (ev) => {
+      const f = {id:uid(),name:file.name,type:file.type,size:file.size,data:ev.target.result,folderId:selFolder,added:new Date().toLocaleDateString("tr-TR",{day:"numeric",month:"short"})}
+      setFolderFiles(fs=>[...fs,f])
+    }
+    reader.readAsDataURL(file); e.target.value=""
+  }
+
+  const delNoteAtt = (attId) => {
+    const upd = {...selNote,attachments:(selNote.attachments||[]).filter(a=>a.id!==attId)}
+    setNotes(ns=>ns.map(n=>n.id===selNote.id?upd:n)); setSelNote(upd)
+  }
+
+  const delFolderFile = (fid) => setFolderFiles(fs=>fs.filter(f=>f.id!==fid))
+
+  const fmtSize = b => b>1024*1024?`${(b/1024/1024).toFixed(1)}MB`:`${(b/1024).toFixed(0)}KB`
 
   return (
     <div className="nwrap">
-      {/* folders */}
+      {/* FOLDERS */}
       <div className="fp">
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:9}}>
           <span style={{fontSize:9,fontWeight:700,color:"var(--t3)",letterSpacing:"1.5px",textTransform:"uppercase"}}>Klasörler</span>
@@ -736,12 +776,12 @@ function NotesPage() {
         </div>
         {folders.filter(f=>!f.pid).map(f=>(
           <div key={f.id}>
-            <div className={`fi${!search&&selFolder===f.id?" on":""}`} onClick={()=>{setSelFolder(f.id);setSearch("")}}>
+            <div className={`fi${!search&&selFolder===f.id?" on":""}`} onClick={()=>{setSelFolder(f.id);setSearch("");setSelNote(null)}}>
               <span>📁</span><span style={{flex:1}}>{f.name}</span>
               <span style={{fontSize:10,color:"var(--t3)"}}>{notes.filter(n=>n.fid===f.id).length}</span>
             </div>
             {folders.filter(c=>c.pid===f.id).map(c=>(
-              <div key={c.id} className={`fi${!search&&selFolder===c.id?" on":""}`} style={{paddingLeft:18}} onClick={()=>{setSelFolder(c.id);setSearch("")}}>
+              <div key={c.id} className={`fi${!search&&selFolder===c.id?" on":""}`} style={{paddingLeft:18}} onClick={()=>{setSelFolder(c.id);setSearch("");setSelNote(null)}}>
                 <span>📄</span><span style={{flex:1}}>{c.name}</span>
                 <span style={{fontSize:10,color:"var(--t3)"}}>{notes.filter(n=>n.fid===c.id).length}</span>
               </div>
@@ -750,7 +790,7 @@ function NotesPage() {
         ))}
       </div>
 
-      {/* note list */}
+      {/* NOTE LIST + FOLDER FILES */}
       <div className="nlp">
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:9}}>
           <span style={{fontSize:9,fontWeight:700,color:"var(--t3)",letterSpacing:"1.5px",textTransform:"uppercase"}}>Notlar</span>
@@ -759,14 +799,44 @@ function NotesPage() {
         <input className="fi2" placeholder="🔍 Ara..." value={search} onChange={e=>setSearch(e.target.value)} style={{marginBottom:9,padding:"6px 9px",fontSize:12,width:"100%"}}/>
         {filtered.length===0&&<div style={{color:"var(--t3)",fontSize:12,padding:"8px 0"}}>Not bulunamadı</div>}
         {filtered.map(n=>(
-          <div key={n.id} className={`nc${selNote?.id===n.id?" on":""}`} onClick={()=>{setSelNote(n);setEditTxt(n.body);setEditTitle(n.title);setEditMode(false)}}>
+          <div key={n.id} className={`nc${selNote?.id===n.id?" on":""}`} onClick={()=>openNote(n)}>
             <div style={{fontSize:13,fontWeight:600}}>{n.title}</div>
-            <div style={{fontSize:11,color:"var(--t3)",marginTop:2}}>{(n.ts/3600).toFixed(1)}s · {n.upd}</div>
+            <div style={{fontSize:11,color:"var(--t3)",marginTop:2,display:"flex",gap:8}}>
+              <span>{(n.ts/3600).toFixed(1)}s · {n.upd}</span>
+              {(n.attachments||[]).length>0&&<span>📎{(n.attachments||[]).length}</span>}
+            </div>
           </div>
         ))}
+
+        {/* KLASÖR DOSYALARI */}
+        {!search&&(
+          <div style={{marginTop:14,borderTop:"1px solid var(--b1)",paddingTop:12}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+              <span style={{fontSize:9,fontWeight:700,color:"var(--t3)",letterSpacing:"1.5px",textTransform:"uppercase"}}>Klasör Dosyaları</span>
+              <button className="btn bg bsm bic" title="Dosya / Resim Ekle" onClick={()=>folderFileRef.current?.click()}>📎</button>
+              <input ref={folderFileRef} type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={handleFolderFile}/>
+            </div>
+            {currentFolderFiles.length===0&&(
+              <div style={{color:"var(--t3)",fontSize:11,padding:"6px 0",fontStyle:"italic"}}>Dosya yok — 📎 ile ekle</div>
+            )}
+            {currentFolderFiles.map(f=>(
+              <div key={f.id}
+                style={{display:"flex",alignItems:"center",gap:7,padding:"7px 9px",background:"var(--s1)",border:"1px solid var(--b1)",borderRadius:6,marginBottom:5,cursor:"pointer",transition:".1s"}}
+                onClick={()=>setPreviewFile(f)}
+              >
+                <span style={{fontSize:16,flexShrink:0}}>{f.type.startsWith("image/")?"🖼️":"📄"}</span>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:12,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{f.name}</div>
+                  <div style={{fontSize:10,color:"var(--t3)"}}>{fmtSize(f.size)} · {f.added}</div>
+                </div>
+                <button className="btn bd bsm bic" onClick={e=>{e.stopPropagation();delFolderFile(f.id)}}><Ic n="trash" sz={10}/></button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* editor */}
+      {/* EDITOR */}
       <div className="ep">
         {selNote?(
           <>
@@ -776,6 +846,8 @@ function NotesPage() {
                 : <span style={{fontSize:17,fontWeight:700,flex:1}}>{selNote.title}</span>}
               <div style={{display:"flex",gap:5,alignItems:"center",flexWrap:"wrap"}}>
                 {selNote.tags?.map(t=><span key={t} className="tag">{t}</span>)}
+                <button className="btn bg bsm" title="Nota Dosya Ekle" onClick={()=>noteFileRef.current?.click()}>📎</button>
+                <input ref={noteFileRef} type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={handleNoteFile}/>
                 {editMode?(
                   <><button className="btn bp bsm" onClick={save}>Kaydet</button>
                     <button className="btn bg bsm" onClick={()=>setEditMode(false)}>İptal</button></>
@@ -787,17 +859,63 @@ function NotesPage() {
             </div>
             <div style={{padding:"5px 17px",borderBottom:"1px solid var(--b1)",fontSize:11,color:"var(--t3)",display:"flex",gap:12,flexShrink:0}}>
               <span>{(selNote.ts/3600).toFixed(1)}s çalışıldı</span><span>{selNote.upd}</span>
+              {(selNote.attachments||[]).length>0&&<span>📎 {(selNote.attachments||[]).length} ek</span>}
             </div>
             <div className="ebody">
               {editMode
                 ? <textarea className="etxt" value={editTxt} onChange={e=>setEditTxt(e.target.value)}/>
-                : <div className="ep-md">{renderMd(selNote.body,title=>{ const n=notes.find(x=>x.title===title); if(n){setSelNote(n);setEditTxt(n.body);setEditTitle(n.title);setEditMode(false)} })}</div>}
+                : <div className="ep-md">{renderMd(selNote.body,title=>{ const n=notes.find(x=>x.title===title); if(n) openNote(n) })}</div>}
+              {(selNote.attachments||[]).length>0&&(
+                <div style={{marginTop:20,borderTop:"1px solid var(--b1)",paddingTop:16}}>
+                  <div style={{fontSize:11,fontWeight:700,color:"var(--t3)",letterSpacing:1,marginBottom:12}}>EKLER</div>
+                  {(selNote.attachments||[]).map(att=>(
+                    <div key={att.id} style={{marginBottom:12}}>
+                      {att.type.startsWith("image/")&&(
+                        <div>
+                          <img src={att.data} alt={att.name} style={{maxWidth:"100%",maxHeight:340,borderRadius:8,border:"1px solid var(--b1)",display:"block",cursor:"pointer"}} onClick={()=>setPreviewFile(att)}/>
+                          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:5}}>
+                            <span style={{fontSize:11,color:"var(--t3)"}}>{att.name} · {fmtSize(att.size)}</span>
+                            <button className="btn bd bsm bic" onClick={()=>delNoteAtt(att.id)}><Ic n="trash" sz={11}/></button>
+                          </div>
+                        </div>
+                      )}
+                      {att.type==="application/pdf"&&(
+                        <div style={{display:"flex",alignItems:"center",gap:10,padding:"10px 13px",background:"var(--s1)",border:"1px solid var(--b1)",borderRadius:8}}>
+                          <span style={{fontSize:20}}>📄</span>
+                          <div style={{flex:1}}>
+                            <div style={{fontSize:13,fontWeight:600}}>{att.name}</div>
+                            <div style={{fontSize:11,color:"var(--t3)",marginTop:1}}>{fmtSize(att.size)}</div>
+                          </div>
+                          <a href={att.data} download={att.name} style={{padding:"5px 10px",background:"var(--s2)",border:"1px solid var(--b1)",borderRadius:6,fontSize:12,color:"var(--acc)",textDecoration:"none",fontWeight:600}}>⬇ İndir</a>
+                          <button className="btn bd bsm bic" onClick={()=>delNoteAtt(att.id)}><Ic n="trash" sz={11}/></button>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </>
         ):(
           <div className="empty"><div style={{fontSize:34,marginBottom:9}}>📄</div><div>Bir not seçin</div></div>
         )}
       </div>
+
+      {/* PREVIEW MODAL */}
+      {previewFile&&(
+        <div className="ov" onClick={()=>setPreviewFile(null)} style={{zIndex:400}}>
+          <div style={{maxWidth:"90vw",maxHeight:"90vh",position:"relative"}} onClick={e=>e.stopPropagation()}>
+            <button className="btn bd" style={{position:"absolute",top:-36,right:0}} onClick={()=>setPreviewFile(null)}>✕ Kapat</button>
+            {previewFile.type.startsWith("image/")&&(
+              <img src={previewFile.data} alt={previewFile.name} style={{maxWidth:"90vw",maxHeight:"85vh",borderRadius:10,border:"1px solid var(--b1)",display:"block"}}/>
+            )}
+            {previewFile.type==="application/pdf"&&(
+              <iframe src={previewFile.data} title={previewFile.name} style={{width:"80vw",height:"85vh",border:"none",borderRadius:10}}/>
+            )}
+            <div style={{textAlign:"center",marginTop:8,fontSize:12,color:"var(--t3)"}}>{previewFile.name} · {fmtSize(previewFile.size)}</div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
@@ -928,6 +1046,7 @@ export default function App() {
   const [notes,setNotes]       = useLS("sf_notes",I_NOTES)
   const [tasks,setTasks]       = useLS("sf_tasks",I_TASKS)
   const [goals,setGoals]       = useLS("sf_goals",I_GOALS)
+  const [folderFiles, setFolderFiles] = useLS("sf_ffiles", [])
   const [selFolder,setSelFolder]= useState(2)
   const [selNote,setSelNote]   = useState(null)
   const [editMode,setEditMode] = useState(false)
@@ -968,6 +1087,7 @@ useEffect(()=>{
     selFolder,setSelFolder,selNote,setSelNote,
     editMode,setEditMode,editTxt,setEditTxt,editTitle,setEditTitle,
     modal,setModal,modalTask,setModalTask,
+    folderFiles, setFolderFiles,
   }
 
   const NAV=[
