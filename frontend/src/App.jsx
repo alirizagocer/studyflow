@@ -910,14 +910,14 @@ function StatsPage() {
         <>
           <div className="g4" style={{marginBottom:14}}>
             {[
-              {l:"Bu Hafta",v:`${wData.reduce((s,d)=>s+d.h,0).toFixed(1)}s`,c:"#4fa3ff"},
-              {l:"Tamamlanan",v:`${wData.reduce((s,d)=>s+d.done,0)} görev`,c:"#2edc8a"},
-              {l:"Toplam Saat",v:`${totalH.toFixed(1)}s`,c:"#ffaa3d"},
-              {l:"Tamamlanan",v:`${totalDone} görev`,c:"#ff6fa8"},
+              {l:"Bu Hafta",v:wData.reduce((s,d)=>s+d.h,0).toFixed(1)+" saat",c:"#4f9eff"},
+              {l:"Tamamlanan",v:wData.reduce((s,d)=>s+d.done,0)+" görev",c:"#2edc8a"},
+              {l:"Toplam Saat",v:totalH.toFixed(1)+" saat",c:"#ffaa3d"},
+              {l:"Tamamlanan",v:totalDone+" görev",c:"#ff6fa8"},
             ].map((x,i)=>(
-              <div key={i} className="card" style={{textAlign:"center",padding:12}}>
-                <div style={{fontSize:20,fontWeight:800,color:x.c}}>{x.v}</div>
-                <div style={{fontSize:10,color:"var(--t3)",marginTop:3}}>{x.l}</div>
+              <div key={i} className="card" style={{textAlign:"center",padding:14}}>
+                <div style={{fontSize:9,fontWeight:700,color:x.c,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8,opacity:.8}}>{x.l}</div>
+                <div style={{fontSize:18,fontWeight:700,color:"var(--t1)",fontFamily:"Syne"}}>{x.v}</div>
               </div>
             ))}
           </div>
@@ -1574,10 +1574,10 @@ function Dashboard() {
   const wData = useMemo(()=>DNS.map((d,i)=>({day:d,h:[2.1,3.4,4.1,2.8,3.9,1.2,0.8][i]})),[])
 
   const statCards = [
-    {l:"Bu Hafta",v:"18.3s",s:"/25 hedef",c:"#4f9eff",g:"rgba(79,158,255,.15)",pct:73,ic:"📚"},
-    {l:"Bugün",v:`${done}/${tt.length}`,s:"görev",c:"#ffaa3d",g:"rgba(255,170,61,.12)",pct:tt.length?Math.round(done/tt.length*100):0,ic:"✅"},
-    {l:"Streak",v:"🔥 5",s:"gün üst üste",c:"#ff6fa8",g:"rgba(255,111,168,.12)",pct:71,ic:"🔥"},
-    {l:"Notlar",v:`${notes.length}`,s:"toplam not",c:"#2edc8a",g:"rgba(46,220,138,.12)",pct:Math.min(notes.length*3,100),ic:"📝"},
+    {l:"Bu Hafta",v:"18.3",u:"saat",s:"/25 hedef",c:"#4f9eff",g:"rgba(79,158,255,.12)",pct:73,ic:"📚"},
+    {l:"Bugün",v:`${done}/${tt.length}`,u:"",s:"görev tamamlandı",c:"#ffaa3d",g:"rgba(255,170,61,.1)",pct:tt.length?Math.round(done/tt.length*100):0,ic:"✅"},
+    {l:"Streak",v:"5",u:"gün",s:"üst üste",c:"#ff6fa8",g:"rgba(255,111,168,.1)",pct:71,ic:"🔥"},
+    {l:"Notlar",v:`${notes.length}`,u:"",s:"toplam not",c:"#2edc8a",g:"rgba(46,220,138,.1)",pct:Math.min(notes.length*3,100),ic:"📝"},
   ]
 
   return (
@@ -1586,19 +1586,20 @@ function Dashboard() {
       <div className="g4">
         {statCards.map((c,i)=>(
           <div key={i} style={{
-            background:`linear-gradient(135deg,${c.g},rgba(15,24,40,.9))`,
-            border:`1px solid ${c.c}28`,borderRadius:14,padding:16,
+            background:`linear-gradient(145deg,${c.g},rgba(12,20,34,.95))`,
+            border:`1px solid ${c.c}22`,borderRadius:14,padding:"15px 16px",
             transition:"all .2s ease",cursor:"default",position:"relative",overflow:"hidden",
           }}
-            onMouseOver={e=>{e.currentTarget.style.transform="translateY(-3px)";e.currentTarget.style.boxShadow=`0 8px 30px ${c.c}20`}}
+            onMouseOver={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow=`0 8px 28px ${c.c}18`}}
             onMouseOut={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow=""}}
           >
-            <div style={{position:"absolute",top:-16,right:-12,fontSize:48,opacity:.1}}>{c.ic}</div>
-            <div style={{fontSize:9.5,fontWeight:700,color:c.c,letterSpacing:1.3,textTransform:"uppercase",marginBottom:6,opacity:.8}}>{c.l}</div>
-            <div style={{fontSize:26,fontWeight:800,letterSpacing:-1,color:c.c,lineHeight:1}}>{c.v}</div>
-            <div style={{fontSize:11,color:"var(--t3)",marginTop:3}}>{c.s}</div>
-            <div style={{height:3,background:"rgba(255,255,255,.05)",borderRadius:10,overflow:"hidden",marginTop:9}}>
-              <div style={{height:"100%",width:`${c.pct}%`,background:`linear-gradient(90deg,${c.c},${c.c}aa)`,borderRadius:10,transition:"width .6s cubic-bezier(.4,0,.2,1)"}}/>
+            <div style={{fontSize:9,fontWeight:700,color:c.c,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8,opacity:.8}}>{c.l}</div>
+            <div style={{fontSize:22,fontWeight:700,color:"var(--t1)",marginBottom:3,fontFamily:"Syne"}}>
+              {c.v}{c.u?" "+c.u:""}
+            </div>
+            <div style={{fontSize:11,color:"var(--t3)",fontWeight:400}}>{c.s}</div>
+            <div style={{height:2,background:"rgba(255,255,255,.04)",borderRadius:10,overflow:"hidden",marginTop:10}}>
+              <div style={{height:"100%",width:`${c.pct}%`,background:c.c,borderRadius:10,transition:"width .7s ease"}}/>
             </div>
           </div>
         ))}
