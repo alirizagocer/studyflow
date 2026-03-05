@@ -117,7 +117,7 @@ function createWindow() {
 
   mainWindow.once("ready-to-show", () => {
     mainWindow.show();
-    if (IS_DEV) mainWindow.webContents.openDevTools();
+    //if (IS_DEV) mainWindow.webContents.openDevTools();
   });
 
   // Dış linkleri tarayıcıda aç — Electron içinde açma
