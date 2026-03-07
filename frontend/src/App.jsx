@@ -11,9 +11,16 @@ const CSS = `
   --t1:#e8f4ff;--t2:#7ba3c8;--t3:#3d5a7a;
   --acc:#4f9eff;--acc2:#7c6bff;--acc3:#ff6fa8;
   --green:#2edc8a;--orange:#ffaa3d;--red:#ff5c6e;
-  --r:14px;--r2:8px;
-  --glow-acc:rgba(79,158,255,.18);
-  --glow-purple:rgba(124,107,255,.15);
+  --r:clamp(8px,1vw,14px);--r2:clamp(5px,.6vw,8px);
+  --fs-xs:clamp(9px,.65vw,11px);
+  --fs-sm:clamp(10px,.75vw,13px);
+  --fs-md:clamp(12px,.9vw,15px);
+  --fs-lg:clamp(14px,1.1vw,19px);
+  --fs-xl:clamp(18px,1.6vw,28px);
+  --sp-xs:clamp(4px,.4vw,7px);
+  --sp-sm:clamp(7px,.6vw,11px);
+  --sp-md:clamp(11px,.9vw,18px);
+  --sp-lg:clamp(16px,1.4vw,26px);
 }
 html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:'Syne',sans-serif;overflow:hidden}
 ::-webkit-scrollbar{width:3px;height:3px}
@@ -23,31 +30,32 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:'Sy
 
 /* ── SIDEBAR ── */
 .sidebar{
-  width:216px;min-width:216px;
+  width:clamp(170px,14vw,230px);min-width:clamp(170px,14vw,230px);
   background:linear-gradient(180deg,rgba(10,17,32,.98) 0%,rgba(6,12,24,.98) 100%);
   border-right:1px solid rgba(31,51,82,.6);
-  display:flex;flex-direction:column;padding:18px 0;
+  display:flex;flex-direction:column;padding:clamp(12px,1.2vw,18px) 0;
   box-shadow:4px 0 24px rgba(0,0,0,.3);
 }
-.logo{padding:0 16px 22px;display:flex;align-items:center;gap:10px}
+.logo{padding:0 clamp(10px,1vw,16px) clamp(14px,1.4vw,22px);display:flex;align-items:center;gap:clamp(6px,.6vw,10px)}
 .logo-ic{
-  width:34px;height:34px;border-radius:9px;
+  width:clamp(26px,2.2vw,34px);height:clamp(26px,2.2vw,34px);border-radius:9px;
   background:linear-gradient(135deg,var(--acc),var(--acc2));
   display:flex;align-items:center;justify-content:center;
-  font-size:15px;font-weight:900;color:#fff;
-  box-shadow:0 4px 16px rgba(79,158,255,.4);
+  font-size:clamp(11px,.9vw,15px);font-weight:900;color:#fff;
+  box-shadow:0 4px 16px rgba(79,158,255,.4);flex-shrink:0;
 }
-.logo-name{font-size:17px;font-weight:800;letter-spacing:-.5px}
+.logo-name{font-size:var(--fs-lg);font-weight:800;letter-spacing:-.5px}
 .logo-name span{
   background:linear-gradient(135deg,var(--acc),var(--acc2));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-.nav-g{padding:0 9px;flex:1}
-.nav-lbl{font-size:9px;font-weight:700;letter-spacing:1.8px;color:var(--t3);text-transform:uppercase;padding:8px 8px 4px}
+.nav-g{padding:0 clamp(6px,.6vw,9px);flex:1}
+.nav-lbl{font-size:var(--fs-xs);font-weight:700;letter-spacing:1.8px;color:var(--t3);text-transform:uppercase;padding:clamp(5px,.5vw,8px) clamp(6px,.6vw,8px) 4px}
 .ni{
-  display:flex;align-items:center;gap:9px;padding:9px 11px;
+  display:flex;align-items:center;gap:clamp(6px,.6vw,9px);
+  padding:clamp(6px,.55vw,9px) clamp(8px,.8vw,11px);
   border-radius:var(--r2);cursor:pointer;transition:all .18s ease;
-  color:var(--t2);font-size:13px;font-weight:500;
+  color:var(--t2);font-size:var(--fs-sm);font-weight:500;
   border:1px solid transparent;user-select:none;position:relative;
 }
 .ni:hover{background:rgba(79,158,255,.08);color:var(--t1);transform:translateX(2px)}
@@ -63,9 +71,9 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:'Sy
 }
 .ndot{width:6px;height:6px;border-radius:50%;background:var(--green);margin-left:auto;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.8)}}
-.sb-bot{padding:9px}
+.sb-bot{padding:clamp(6px,.6vw,9px)}
 .streak{
-  padding:13px;border-radius:var(--r);
+  padding:clamp(9px,.9vw,13px);border-radius:var(--r);
   background:linear-gradient(135deg,rgba(255,111,168,.08),rgba(255,170,61,.05));
   border:1px solid rgba(255,111,168,.18);
   position:relative;overflow:hidden;
@@ -80,20 +88,21 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:'Sy
 /* ── MAIN ── */
 .main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
 .topbar{
-  padding:13px 22px;
+  padding:clamp(8px,.7vw,13px) clamp(14px,1.4vw,22px);
   background:rgba(10,17,32,.8);
   border-bottom:1px solid rgba(31,51,82,.5);
   display:flex;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0;
   backdrop-filter:blur(12px);
 }
-.pt{font-size:17px;font-weight:700;letter-spacing:-.3px;white-space:nowrap}
-.tr{display:flex;gap:7px;align-items:center}
+.pt{font-size:var(--fs-lg);font-weight:700;letter-spacing:-.3px;white-space:nowrap}
+.tr{display:flex;gap:clamp(4px,.4vw,7px);align-items:center}
 
 /* ── BUTTONS ── */
 .btn{
-  display:inline-flex;align-items:center;gap:5px;padding:7px 14px;
+  display:inline-flex;align-items:center;gap:clamp(3px,.3vw,5px);
+  padding:clamp(5px,.45vw,7px) clamp(9px,.9vw,14px);
   border-radius:var(--r2);border:none;cursor:pointer;
-  font-size:12px;font-family:'Syne',sans-serif;font-weight:600;
+  font-size:var(--fs-xs);font-family:'Syne',sans-serif;font-weight:600;
   transition:all .15s ease;white-space:nowrap;user-select:none;
 }
 .bp{
@@ -108,47 +117,48 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:'Sy
 .bd:hover{background:rgba(255,92,110,.16)}
 .bgreen{background:rgba(46,220,138,.08);color:var(--green);border:1px solid rgba(46,220,138,.2)}
 .bgreen:hover{background:rgba(46,220,138,.16)}
-.bsm{padding:4px 10px;font-size:11px}.bic{padding:5px}
+.bsm{padding:clamp(3px,.3vw,4px) clamp(7px,.7vw,10px);font-size:var(--fs-xs)}.bic{padding:5px}
 
 /* ── CONTENT ── */
-.cnt{flex:1;overflow-y:auto;padding:20px 22px}
+.cnt{flex:1;overflow-y:auto;padding:clamp(12px,1.2vw,20px) clamp(14px,1.4vw,22px)}
 
 /* ── CARDS ── */
 .card{
   background:rgba(15,24,40,.7);
   border:1px solid rgba(31,51,82,.6);
-  border-radius:var(--r);padding:16px;
+  border-radius:var(--r);padding:clamp(11px,.9vw,16px);
   transition:all .2s ease;
   backdrop-filter:blur(8px);
 }
 .card:hover{border-color:rgba(42,69,104,.9);box-shadow:0 4px 24px rgba(0,0,0,.2)}
-.clbl{font-size:9.5px;font-weight:700;color:var(--t3);letter-spacing:1.3px;text-transform:uppercase;margin-bottom:6px}
-.cval{font-size:26px;font-weight:800;letter-spacing:-1px;line-height:1}
-.csub{font-size:11px;color:var(--t3);margin-top:3px}
-.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.clbl{font-size:var(--fs-xs);font-weight:700;color:var(--t3);letter-spacing:1.3px;text-transform:uppercase;margin-bottom:6px}
+.cval{font-size:var(--fs-xl);font-weight:800;letter-spacing:-1px;line-height:1}
+.csub{font-size:var(--fs-xs);color:var(--t3);margin-top:3px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(8px,.7vw,12px);margin-bottom:clamp(9px,.9vw,14px)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(9px,.8vw,14px);margin-bottom:clamp(9px,.9vw,14px)}
 .pbar{height:3px;background:rgba(255,255,255,.05);border-radius:10px;overflow:hidden;margin-top:8px}
 .pf{height:100%;border-radius:10px;transition:width .6s cubic-bezier(.4,0,.2,1)}
-.sh{font-size:12px;font-weight:700;color:var(--t2);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between}
+.sh{font-size:var(--fs-sm);font-weight:700;color:var(--t2);margin-bottom:clamp(8px,.8vw,12px);display:flex;align-items:center;justify-content:space-between}
 
 /* ── TASK ITEMS ── */
 .ti{
-  display:flex;align-items:center;gap:9px;padding:9px 12px;
+  display:flex;align-items:center;gap:clamp(6px,.6vw,9px);
+  padding:clamp(6px,.55vw,9px) clamp(8px,.8vw,12px);
   background:rgba(20,31,53,.6);border:1px solid rgba(31,51,82,.5);
   border-radius:var(--r2);margin-bottom:5px;transition:all .15s ease;
 }
 .ti:hover{background:var(--s2);border-color:var(--b2);transform:translateX(2px)}
 .ti.dn{opacity:.4}
 .chk{
-  width:18px;height:18px;border-radius:50%;border:1.5px solid var(--b2);
+  width:clamp(14px,1.2vw,18px);height:clamp(14px,1.2vw,18px);border-radius:50%;border:1.5px solid var(--b2);
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;cursor:pointer;transition:all .2s ease;font-size:10px;
 }
 .chk.on{background:var(--green);border-color:var(--green);color:#041020;box-shadow:0 0 8px rgba(46,220,138,.4)}
 .sug{
-  display:flex;gap:9px;padding:10px 13px;
+  display:flex;gap:9px;padding:clamp(7px,.7vw,10px) clamp(9px,.9vw,13px);
   background:rgba(79,158,255,.05);border:1px solid rgba(79,158,255,.14);
-  border-radius:var(--r2);margin-bottom:7px;font-size:12px;color:var(--t2);
+  border-radius:var(--r2);margin-bottom:7px;font-size:var(--fs-sm);color:var(--t2);
   transition:.15s;
 }
 .sug:hover{background:rgba(79,158,255,.08);border-color:rgba(79,158,255,.22)}
@@ -156,20 +166,21 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:'Sy
 /* ── CALENDAR ── */
 .cwrap{display:flex;flex-direction:column;height:calc(100vh - 57px);overflow:hidden}
 .chead{
-  display:flex;align-items:center;gap:7px;padding:9px 14px;
+  display:flex;align-items:center;gap:clamp(4px,.5vw,7px);
+  padding:clamp(6px,.6vw,9px) clamp(9px,.9vw,14px);
   border-bottom:1px solid rgba(31,51,82,.5);
   background:rgba(10,17,32,.7);flex-shrink:0;flex-wrap:wrap;
   backdrop-filter:blur(10px);
 }
 .cnav{
-  width:27px;height:27px;border-radius:6px;
+  width:clamp(22px,1.8vw,27px);height:clamp(22px,1.8vw,27px);border-radius:6px;
   border:1px solid rgba(31,51,82,.7);background:rgba(20,31,53,.6);
   cursor:pointer;display:flex;align-items:center;justify-content:center;
-  color:var(--t2);font-size:13px;transition:all .15s;
+  color:var(--t2);font-size:var(--fs-sm);transition:all .15s;
 }
 .cnav:hover{background:var(--s2);color:var(--t1)}
 .ctabs{display:flex;gap:2px;margin-left:auto;background:rgba(20,31,53,.6);padding:3px;border-radius:8px;border:1px solid rgba(31,51,82,.5)}
-.ctab{padding:4px 12px;border-radius:6px;cursor:pointer;font-size:12px;font-weight:600;color:var(--t2);transition:all .15s;border:1px solid transparent;user-select:none}
+.ctab{padding:clamp(3px,.3vw,4px) clamp(8px,.8vw,12px);border-radius:6px;cursor:pointer;font-size:var(--fs-xs);font-weight:600;color:var(--t2);transition:all .15s;border:1px solid transparent;user-select:none}
 .ctab.on{background:linear-gradient(135deg,rgba(79,158,255,.2),rgba(124,107,255,.15));color:var(--acc);border-color:rgba(79,158,255,.3)}
 .ctab:hover:not(.on){color:var(--t1)}
 
@@ -177,27 +188,28 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:'Sy
 .month-out{flex:1;overflow:auto}
 .mgrid{display:grid;grid-template-columns:repeat(7,1fr)}
 .mhdr{
-  padding:7px;text-align:center;font-size:10px;font-weight:700;
+  padding:clamp(4px,.5vw,7px);text-align:center;font-size:var(--fs-xs);font-weight:700;
   color:var(--t3);letter-spacing:1px;text-transform:uppercase;
   border-bottom:1px solid rgba(31,51,82,.5);border-right:1px solid rgba(31,51,82,.3);
   background:rgba(10,17,32,.8);position:sticky;top:0;z-index:5;
 }
 .mcell{
   border-right:1px solid rgba(31,51,82,.3);border-bottom:1px solid rgba(31,51,82,.3);
-  padding:5px;min-height:88px;cursor:default;transition:.1s;
+  padding:clamp(3px,.4vw,5px);min-height:clamp(60px,7vw,88px);cursor:default;transition:.1s;
 }
 .mcell:hover{background:rgba(79,158,255,.03)}
 .mcell.dov{background:rgba(79,158,255,.08)!important;outline:1px dashed rgba(79,158,255,.5)}
 .mcell.tod{background:rgba(79,158,255,.05)}
 .mcell.om{opacity:.28}
 .mdn{
-  font-size:12px;font-weight:700;color:var(--t2);
-  width:22px;height:22px;display:flex;align-items:center;
-  justify-content:center;border-radius:50%;margin-bottom:3px;transition:.15s;
+  font-size:var(--fs-sm);font-weight:700;color:var(--t2);
+  width:clamp(18px,1.6vw,22px);height:clamp(18px,1.6vw,22px);
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;margin-bottom:3px;transition:.15s;
 }
 .mdn.td{background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;box-shadow:0 2px 8px rgba(79,158,255,.4)}
 .chip{
-  font-size:11px;padding:2px 7px;border-radius:5px;margin-bottom:2px;
+  font-size:var(--fs-xs);padding:2px clamp(4px,.5vw,7px);border-radius:5px;margin-bottom:2px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
   cursor:grab;user-select:none;border:1px solid transparent;transition:.1s;
 }
@@ -206,31 +218,31 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:'Sy
 
 /* WEEK */
 .wout{display:flex;flex:1;overflow:hidden}
-.wtimecol{width:48px;flex-shrink:0;border-right:1px solid rgba(31,51,82,.4);background:rgba(10,17,32,.5);overflow:hidden}
+.wtimecol{width:clamp(36px,3.5vw,48px);flex-shrink:0;border-right:1px solid rgba(31,51,82,.4);background:rgba(10,17,32,.5);overflow:hidden}
 .wthdr{height:46px;border-bottom:1px solid rgba(31,51,82,.4)}
 .wts{
-  height:60px;display:flex;align-items:flex-start;justify-content:flex-end;
-  padding:3px 6px 0;font-size:9px;color:var(--t3);
+  height:clamp(44px,4vw,60px);display:flex;align-items:flex-start;justify-content:flex-end;
+  padding:3px clamp(3px,.4vw,6px) 0;font-size:var(--fs-xs);color:var(--t3);
   font-family:'JetBrains Mono',monospace;border-bottom:1px solid rgba(31,51,82,.2);
 }
 .wscroll{flex:1;overflow:auto}
 .winner{display:grid;grid-template-columns:repeat(7,1fr);min-width:560px}
 .wdhrow{display:grid;grid-template-columns:repeat(7,1fr);grid-column:1/-1;position:sticky;top:0;background:rgba(10,17,32,.9);border-bottom:1px solid rgba(31,51,82,.4);z-index:10;backdrop-filter:blur(10px)}
-.wdh{padding:7px 4px;text-align:center;border-right:1px solid rgba(31,51,82,.3)}
-.wdn{font-size:10px;font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase}
-.wdd{font-size:15px;font-weight:800;color:var(--t2);margin-top:1px;transition:.15s}
+.wdh{padding:clamp(4px,.5vw,7px) 4px;text-align:center;border-right:1px solid rgba(31,51,82,.3)}
+.wdn{font-size:var(--fs-xs);font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase}
+.wdd{font-size:var(--fs-md);font-weight:800;color:var(--t2);margin-top:1px;transition:.15s}
 .wdd.td{
   background:linear-gradient(135deg,var(--acc),var(--acc2));color:#fff;
-  width:26px;height:26px;border-radius:50%;
+  width:clamp(20px,1.8vw,26px);height:clamp(20px,1.8vw,26px);border-radius:50%;
   display:flex;align-items:center;justify-content:center;margin:1px auto 0;
   box-shadow:0 2px 10px rgba(79,158,255,.4);
 }
 .wdcol{border-right:1px solid rgba(31,51,82,.25);position:relative;grid-row:2}
-.whour{height:60px;border-bottom:1px solid rgba(31,51,82,.2);transition:.1s;position:relative}
+.whour{height:clamp(44px,4vw,60px);border-bottom:1px solid rgba(31,51,82,.2);transition:.1s;position:relative}
 .whour.dov{background:rgba(79,158,255,.06)}
 .wblock{
-  position:absolute;left:3px;right:3px;border-radius:6px;padding:3px 7px;
-  cursor:grab;font-size:11px;font-weight:600;overflow:hidden;z-index:5;
+  position:absolute;left:3px;right:3px;border-radius:6px;padding:3px clamp(4px,.5vw,7px);
+  cursor:grab;font-size:var(--fs-xs);font-weight:600;overflow:hidden;z-index:5;
   user-select:none;border-left:3px solid transparent;
   box-shadow:0 2px 8px rgba(0,0,0,.25);transition:filter .1s,opacity .1s;
 }
@@ -239,86 +251,87 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:'Sy
 
 /* ── NOTES ── */
 .nwrap{display:flex;height:calc(100vh - 57px);overflow:hidden}
-.fp{width:190px;min-width:190px;border-right:1px solid rgba(31,51,82,.4);overflow-y:auto;padding:9px;flex-shrink:0;background:rgba(8,14,26,.4)}
-.nlp{width:190px;min-width:190px;border-right:1px solid rgba(31,51,82,.4);overflow-y:auto;padding:9px;flex-shrink:0}
+.fp{width:clamp(140px,13vw,190px);min-width:clamp(140px,13vw,190px);border-right:1px solid rgba(31,51,82,.4);overflow-y:auto;padding:clamp(6px,.7vw,9px);flex-shrink:0;background:rgba(8,14,26,.4)}
+.nlp{width:clamp(140px,13vw,190px);min-width:clamp(140px,13vw,190px);border-right:1px solid rgba(31,51,82,.4);overflow-y:auto;padding:clamp(6px,.7vw,9px);flex-shrink:0}
 .ep{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
-.fi{display:flex;align-items:center;gap:6px;padding:7px 8px;border-radius:var(--r2);cursor:pointer;font-size:12px;color:var(--t2);transition:all .12s;user-select:none}
+.fi{display:flex;align-items:center;gap:6px;padding:clamp(5px,.5vw,7px) clamp(6px,.6vw,8px);border-radius:var(--r2);cursor:pointer;font-size:var(--fs-sm);color:var(--t2);transition:all .12s;user-select:none}
 .fi:hover{background:rgba(79,158,255,.07);color:var(--t1)}
 .fi.on{background:rgba(79,158,255,.12);color:var(--acc);font-weight:600}
-.nc{padding:9px 11px;border-radius:var(--r2);cursor:pointer;margin-bottom:4px;border:1px solid transparent;transition:all .12s}
+.nc{padding:clamp(6px,.7vw,9px) clamp(8px,.8vw,11px);border-radius:var(--r2);cursor:pointer;margin-bottom:4px;border:1px solid transparent;transition:all .12s}
 .nc:hover{background:rgba(20,31,53,.7);border-color:rgba(31,51,82,.5)}
 .nc.on{background:rgba(79,158,255,.08);border-color:rgba(79,158,255,.25);box-shadow:0 2px 10px rgba(79,158,255,.08)}
 .ehead{
-  padding:12px 17px;border-bottom:1px solid rgba(31,51,82,.4);
+  padding:clamp(8px,.8vw,12px) clamp(12px,1.2vw,17px);border-bottom:1px solid rgba(31,51,82,.4);
   display:flex;align-items:center;gap:9px;flex-shrink:0;
   background:rgba(10,17,32,.5);backdrop-filter:blur(8px);
 }
-.ebody{flex:1;overflow-y:auto;padding:18px 20px}
-.ep-md h1{font-size:21px;color:var(--t1);margin-bottom:10px;font-weight:800;letter-spacing:-.5px}
-.ep-md h2{font-size:16px;color:var(--t1);margin:14px 0 6px;font-weight:700}
-.ep-md h3{font-size:14px;color:var(--t1);margin:10px 0 4px;font-weight:600}
-.ep-md p{font-size:13px;color:var(--t2);margin-bottom:8px;line-height:1.85}
+.ebody{flex:1;overflow-y:auto;padding:clamp(12px,1.2vw,18px) clamp(14px,1.4vw,20px)}
+.ep-md h1{font-size:clamp(16px,1.6vw,21px);color:var(--t1);margin-bottom:10px;font-weight:800;letter-spacing:-.5px}
+.ep-md h2{font-size:clamp(13px,1.2vw,16px);color:var(--t1);margin:14px 0 6px;font-weight:700}
+.ep-md h3{font-size:clamp(11px,1vw,14px);color:var(--t1);margin:10px 0 4px;font-weight:600}
+.ep-md p{font-size:var(--fs-sm);color:var(--t2);margin-bottom:8px;line-height:1.85}
 .ep-md ul,.ep-md ol{padding-left:17px;margin-bottom:8px}
-.ep-md li{font-size:13px;color:var(--t2);margin-bottom:4px;line-height:1.75}
-.ep-md code{background:rgba(79,158,255,.1);padding:2px 6px;border-radius:4px;color:var(--acc);font-size:12px;font-family:'JetBrains Mono',monospace;border:1px solid rgba(79,158,255,.2)}
-.ep-md blockquote{border-left:3px solid var(--acc);padding-left:13px;color:var(--t2);font-size:13px;margin:7px 0;font-style:italic}
+.ep-md li{font-size:var(--fs-sm);color:var(--t2);margin-bottom:4px;line-height:1.75}
+.ep-md code{background:rgba(79,158,255,.1);padding:2px 6px;border-radius:4px;color:var(--acc);font-size:var(--fs-xs);font-family:'JetBrains Mono',monospace;border:1px solid rgba(79,158,255,.2)}
+.ep-md blockquote{border-left:3px solid var(--acc);padding-left:13px;color:var(--t2);font-size:var(--fs-sm);margin:7px 0;font-style:italic}
 .ep-md strong{color:var(--t1);font-weight:700}
 .nlink{color:var(--acc);text-decoration:none;border-bottom:1px dashed rgba(79,158,255,.4);cursor:pointer;transition:.1s}
 .nlink:hover{border-bottom-color:var(--acc)}
-.tag{display:inline-flex;padding:2px 7px;background:rgba(79,158,255,.08);border:1px solid rgba(79,158,255,.2);border-radius:20px;font-size:10px;color:var(--acc);margin:2px}
-.etxt{width:100%;height:100%;min-height:360px;background:transparent;border:none;outline:none;color:var(--t1);font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.85;resize:none}
+.tag{display:inline-flex;padding:2px 7px;background:rgba(79,158,255,.08);border:1px solid rgba(79,158,255,.2);border-radius:20px;font-size:var(--fs-xs);color:var(--acc);margin:2px}
+.etxt{width:100%;height:100%;min-height:360px;background:transparent;border:none;outline:none;color:var(--t1);font-family:'JetBrains Mono',monospace;font-size:var(--fs-sm);line-height:1.85;resize:none}
 
 /* ── TIMER ── */
-.twrap{display:flex;flex-direction:column;align-items:center;padding:26px 20px;max-width:440px;margin:0 auto}
-.tring{position:relative;width:200px;height:200px;margin-bottom:20px}
+.twrap{display:flex;flex-direction:column;align-items:center;padding:clamp(16px,1.8vw,26px) clamp(14px,1.4vw,20px);max-width:clamp(320px,35vw,440px);margin:0 auto}
+.tring{position:relative;width:clamp(140px,14vw,200px);height:clamp(140px,14vw,200px);margin-bottom:clamp(12px,1.4vw,20px)}
 .tsvg{position:absolute;top:0;left:0;transform:rotate(-90deg)}
 .tinner{
-  position:absolute;top:16px;left:16px;width:168px;height:168px;border-radius:50%;
+  position:absolute;top:11%;left:11%;width:78%;height:78%;border-radius:50%;
   background:radial-gradient(circle at center,rgba(15,24,40,.95),rgba(10,17,32,.95));
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   box-shadow:inset 0 2px 20px rgba(0,0,0,.4);
 }
-.ttime{font-size:40px;font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:-2px;line-height:1}
-.pdots{display:flex;gap:8px;margin-bottom:20px}
-.pdot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.07);transition:all .4s cubic-bezier(.4,0,.2,1)}
+.ttime{font-size:clamp(26px,3vw,40px);font-weight:800;font-family:'JetBrains Mono',monospace;letter-spacing:-2px;line-height:1}
+.pdots{display:flex;gap:clamp(5px,.6vw,8px);margin-bottom:clamp(12px,1.4vw,20px)}
+.pdot{width:clamp(6px,.7vw,9px);height:clamp(6px,.7vw,9px);border-radius:50%;background:rgba(255,255,255,.07);transition:all .4s cubic-bezier(.4,0,.2,1)}
 .pdot.on{background:var(--acc);box-shadow:0 0 10px rgba(79,158,255,.5)}
-.tctrl{display:flex;align-items:center;gap:14px;margin-bottom:20px}
+.tctrl{display:flex;align-items:center;gap:clamp(9px,1vw,14px);margin-bottom:clamp(12px,1.4vw,20px)}
 .tbig{
-  width:58px;height:58px;border-radius:50%;border:none;cursor:pointer;
+  width:clamp(44px,4.5vw,58px);height:clamp(44px,4.5vw,58px);border-radius:50%;border:none;cursor:pointer;
   background:linear-gradient(135deg,var(--acc),var(--acc2));
   display:flex;align-items:center;justify-content:center;color:#fff;
-  box-shadow:0 4px 24px rgba(79,158,255,.4);transition:all .15s ease;font-size:22px;
+  box-shadow:0 4px 24px rgba(79,158,255,.4);transition:all .15s ease;
+  font-size:clamp(16px,1.8vw,22px);
 }
 .tbig:hover{transform:scale(1.08);box-shadow:0 6px 30px rgba(79,158,255,.5)}
 .tbig:active{transform:scale(.97)}
 .tsml{
-  width:40px;height:40px;border-radius:50%;
+  width:clamp(30px,3vw,40px);height:clamp(30px,3vw,40px);border-radius:50%;
   border:1px solid rgba(42,69,104,.8);background:rgba(20,31,53,.7);
   cursor:pointer;display:flex;align-items:center;justify-content:center;
-  color:var(--t2);transition:all .15s;font-size:16px;
+  color:var(--t2);transition:all .15s;font-size:clamp(12px,1.3vw,16px);
 }
 .tsml:hover{background:var(--s2);color:var(--t1);transform:scale(1.05)}
 .qn{
-  width:100%;max-width:320px;padding:10px 13px;
+  width:100%;max-width:clamp(240px,28vw,320px);padding:clamp(7px,.8vw,10px) clamp(9px,1vw,13px);
   background:rgba(20,31,53,.6);border:1px solid rgba(31,51,82,.7);
   border-radius:var(--r);color:var(--t1);font-family:'JetBrains Mono',monospace;
-  font-size:12px;resize:none;outline:none;transition:.15s;
+  font-size:var(--fs-sm);resize:none;outline:none;transition:.15s;
 }
 .qn:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(79,158,255,.1)}
 
 /* ── STATS ── */
-.tabs{display:flex;gap:2px;padding:3px;background:rgba(20,31,53,.6);border-radius:9px;margin-bottom:14px;width:fit-content;border:1px solid rgba(31,51,82,.5)}
-.stab{padding:5px 14px;border-radius:7px;cursor:pointer;font-size:12px;font-weight:600;color:var(--t2);transition:all .15s;user-select:none}
+.tabs{display:flex;gap:2px;padding:3px;background:rgba(20,31,53,.6);border-radius:9px;margin-bottom:clamp(9px,.9vw,14px);width:fit-content;border:1px solid rgba(31,51,82,.5)}
+.stab{padding:clamp(4px,.4vw,5px) clamp(10px,1vw,14px);border-radius:7px;cursor:pointer;font-size:var(--fs-sm);font-weight:600;color:var(--t2);transition:all .15s;user-select:none}
 .stab.on{background:linear-gradient(135deg,rgba(79,158,255,.2),rgba(124,107,255,.15));color:var(--acc);box-shadow:0 2px 10px rgba(79,158,255,.15)}
-.hmap{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.hmap{display:grid;grid-template-columns:repeat(7,1fr);gap:clamp(2px,.3vw,4px)}
 .hcell{aspect-ratio:1;border-radius:3px;transition:all .15s;cursor:default}
 .hcell:hover{transform:scale(1.4);z-index:1;position:relative}
 
 /* ── GOALS ── */
-.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(6px,.7vw,10px)}
 .bitem{
   background:rgba(20,31,53,.5);border:1px solid rgba(31,51,82,.5);
-  border-radius:var(--r);padding:14px 10px;text-align:center;transition:all .2s;
+  border-radius:var(--r);padding:clamp(10px,1vw,14px) clamp(7px,.8vw,10px);text-align:center;transition:all .2s;
 }
 .bitem:hover{transform:translateY(-2px)}
 .bitem.ok{border-color:rgba(79,158,255,.3);background:rgba(79,158,255,.06);box-shadow:0 4px 16px rgba(79,158,255,.08)}
@@ -329,20 +342,21 @@ html,body,#root{height:100%;background:var(--bg);color:var(--t1);font-family:'Sy
 @keyframes fadeOv{from{opacity:0}to{opacity:1}}
 .mdl{
   background:linear-gradient(145deg,rgba(15,24,40,.98),rgba(10,17,32,.98));
-  border:1px solid rgba(42,69,104,.7);border-radius:var(--r);padding:22px;
-  width:390px;max-width:92vw;
+  border:1px solid rgba(42,69,104,.7);border-radius:var(--r);
+  padding:clamp(14px,1.4vw,22px);
+  width:clamp(300px,28vw,390px);max-width:92vw;
   box-shadow:0 24px 80px rgba(0,0,0,.7),0 0 0 1px rgba(79,158,255,.05);
   animation:mIn .18s cubic-bezier(.34,1.56,.64,1);
 }
 @keyframes mIn{from{opacity:0;transform:scale(.93) translateY(10px)}to{opacity:1;transform:none}}
-.mt{font-size:14px;font-weight:700;margin-bottom:16px;color:var(--t1)}
-.fg{margin-bottom:11px}
-.fl{font-size:11px;font-weight:600;color:var(--t3);margin-bottom:4px;display:block;letter-spacing:.3px}
+.mt{font-size:var(--fs-md);font-weight:700;margin-bottom:clamp(10px,1vw,16px);color:var(--t1)}
+.fg{margin-bottom:clamp(7px,.8vw,11px)}
+.fl{font-size:var(--fs-xs);font-weight:600;color:var(--t3);margin-bottom:4px;display:block;letter-spacing:.3px}
 .fi2{
-  width:100%;padding:8px 11px;
+  width:100%;padding:clamp(6px,.6vw,8px) clamp(8px,.8vw,11px);
   background:rgba(20,31,53,.7);border:1px solid rgba(31,51,82,.7);
   border-radius:var(--r2);outline:none;color:var(--t1);
-  font-size:13px;font-family:'Syne',sans-serif;transition:.15s;
+  font-size:var(--fs-sm);font-family:'Syne',sans-serif;transition:.15s;
 }
 .fi2:focus{border-color:var(--acc);box-shadow:0 0 0 3px rgba(79,158,255,.1);background:rgba(20,31,53,.9)}
 select.fi2 option{background:#0f1828}
@@ -350,6 +364,17 @@ select.fi2 option{background:#0f1828}
 @keyframes fu{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 .fade{animation:fu .22s cubic-bezier(.4,0,.2,1)}
 .empty{text-align:center;padding:40px;color:var(--t3)}
+
+.calsb{width:clamp(150px,13vw,195px);min-width:clamp(150px,13vw,195px);border-right:1px solid rgba(31,51,82,.4);background:rgba(8,14,26,.5);overflow-y:auto;padding:clamp(7px,.8vw,11px) clamp(6px,.7vw,9px);flex-shrink:0}
+.cwrap-body{display:flex;flex:1;overflow:hidden}
+.agitem{display:flex;align-items:flex-start;gap:clamp(8px,.9vw,12px);padding:clamp(8px,.9vw,11px) clamp(10px,1vw,14px);border-radius:9px;background:rgba(15,24,40,.6);border:1px solid rgba(31,51,82,.4);margin-bottom:7px;transition:.15s;cursor:pointer}
+.agitem:hover{background:rgba(20,31,53,.8);border-color:rgba(42,69,104,.7);transform:translateX(2px)}
+.agdate{font-size:var(--fs-xs);font-weight:700;color:var(--t3);letter-spacing:1px;text-transform:uppercase;padding:8px 0 6px;border-bottom:1px solid rgba(31,51,82,.3);margin-bottom:8px}
+.calcat{display:flex;align-items:center;gap:8px;padding:clamp(4px,.5vw,6px) clamp(6px,.6vw,8px);border-radius:6px;cursor:pointer;transition:.1s;font-size:var(--fs-sm);color:var(--t2);user-select:none}
+.calcat:hover{background:rgba(79,158,255,.06);color:var(--t1)}
+.resize-handle{position:absolute;bottom:0;left:0;right:0;height:6px;cursor:ns-resize;border-radius:0 0 6px 6px;background:rgba(255,255,255,.05);transition:.1s}
+.resize-handle:hover{background:rgba(255,255,255,.15)}
+.create-ghost{position:absolute;left:3px;right:3px;border-radius:6px;border:2px dashed var(--acc);background:rgba(79,158,255,.1);pointer-events:none;z-index:15;display:flex;align-items:flex-start;padding:4px 7px}
 `
 
 /* ═══════════════════════════════════════════════════════ HELPERS */
@@ -459,6 +484,11 @@ const I_GOALS=[
   {id:3,title:"30 Not Al",target:30,cur:3,color:"#2edc8a"},
 ]
 
+const I_HABITS = [
+  {id:1,name:"2.5 Litre Su İç",icon:"💧",color:"#4f9eff",completions:[]},
+  {id:2,name:"30 Dk Spor",icon:"🏃",color:"#2edc8a",completions:[]},
+]
+
 /* ═══════════════════════════════════════════════════════ CONTEXT */
 const Ctx = createContext(null)
 
@@ -531,21 +561,76 @@ function GlobalSearch() {
     </div>
   )
 }
+/* ═══════════════════════════════════════════════════════ MiniCalendar */
+function MiniCalendar({selected,onSelect}) {
+  const {tasks} = useContext(Ctx)
+  const [mc,setMc] = useState(new Date(t0))
+  const ms = new Date(mc.getFullYear(),mc.getMonth(),1)
+  const gs = new Date(ms); gs.setDate(1-((ms.getDay()+6)%7))
+  const cells = Array.from({length:42},(_,i)=>add(gs,i))
+  const DAYS = ["P","S","Ç","P","C","C","P"]
 
+  return (
+    <div>
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:9}}>
+        <button onClick={()=>setMc(d=>{const r=new Date(d);r.setMonth(r.getMonth()-1);return r})}
+          style={{background:"none",border:"none",color:"var(--t2)",cursor:"pointer",fontSize:15,padding:"0 4px",lineHeight:1}}>‹</button>
+        <span style={{fontSize:11,fontWeight:700,color:"var(--t1)"}}>{mc.toLocaleDateString("tr-TR",{month:"long",year:"numeric"})}</span>
+        <button onClick={()=>setMc(d=>{const r=new Date(d);r.setMonth(r.getMonth()+1);return r})}
+          style={{background:"none",border:"none",color:"var(--t2)",cursor:"pointer",fontSize:15,padding:"0 4px",lineHeight:1}}>›</button>
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",marginBottom:3}}>
+        {["P","S","Ç","P","C","C","P"].map((d,i)=>(
+          <div key={i} style={{textAlign:"center",fontSize:9,fontWeight:700,color:"var(--t3)",padding:"2px 0"}}>{d}</div>
+        ))}
+      </div>
+      <div style={{display:"grid",gridTemplateColumns:"repeat(7,1fr)",gap:1}}>
+        {cells.map((cell,i)=>{
+          const key=dk(cell)
+          const isToday=key===dk(t0)
+          const isSel=key===selected
+          const isOther=cell.getMonth()!==mc.getMonth()
+          const hasTasks=tasks.some(t=>t.date===key)
+          return (
+            <div key={i} onClick={()=>onSelect(key,cell)}
+              style={{
+                textAlign:"center",fontSize:11,padding:"4px 2px",borderRadius:5,
+                cursor:"pointer",position:"relative",
+                background:isSel?"var(--acc)":isToday?"rgba(79,158,255,.18)":"transparent",
+                color:isSel?"#fff":isToday?"var(--acc)":isOther?"rgba(61,90,122,.6)":"var(--t2)",
+                fontWeight:isSel||isToday?700:400,transition:".1s",
+              }}
+              onMouseOver={e=>{if(!isSel&&!isToday)e.currentTarget.style.background="rgba(79,158,255,.1)"}}
+              onMouseOut={e=>{if(!isSel&&!isToday)e.currentTarget.style.background="transparent"}}
+            >
+              {cell.getDate()}
+              {hasTasks&&!isSel&&(
+                <div style={{width:3,height:3,borderRadius:"50%",background:isToday?"var(--acc)":"var(--t3)",margin:"1px auto 0"}}/>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
+  )
+}
 /* ═══════════════════════════════════════════════════════ MODAL (own state) */
 function Modal() {
-  const {modal,setModal,modalTask,folders,notes,setNotes,setTasks,setGoals,setFolders,selFolder,setSelFolder,setSelNote,setEditMode,setEditTxt,setEditTitle} = useContext(Ctx)
+  const {modal,setModal,modalTask,folders,notes,setNotes,setTasks,setGoals,setFolders,selFolder,setSelFolder,setSelNote,setEditMode,setEditTxt,setEditTitle,calendars} = useContext(Ctx)
   const [f,setF]     = useState({})
   const [tpl,setTpl] = useState("blank")
-  useEffect(()=>{ setF({}); setTpl("blank") },[modal])
-  if (!modal) return null
-  const upd = (k,v) => setF(x=>({...x,[k]:v}))
+  useEffect(()=>{
+    if(modalTask?.prefill) setF(modalTask.prefill)
+    else setF({})
+    setTpl("blank")
+  },[modal])
+  if(!modal) return null
+  const upd=(k,v)=>setF(x=>({...x,[k]:v}))
 
-  /* ── GÖREV DETAY ── */
-  if (modal==="td" && modalTask) {
-    const t = modalTask
-    const st = t.startTime||`${String(t.hour||9).padStart(2,"0")}:00`
-    const et = t.endTime||`${String((t.hour||9)+(t.dur||1)).padStart(2,"0")}:00`
+  if(modal==="td"&&modalTask&&!modalTask.prefill){
+    const t=modalTask
+    const st=t.startTime||`${String(t.hour||9).padStart(2,"0")}:00`
+    const et=t.endTime||`${String((t.hour||9)+(t.dur||1)).padStart(2,"0")}:00`
     return (
       <div className="ov" onClick={e=>e.target.className==="ov"&&setModal(null)}>
         <div className="mdl">
@@ -559,8 +644,11 @@ function Modal() {
           <div style={{color:"var(--t2)",fontSize:13,lineHeight:2.1,background:"var(--s1)",borderRadius:8,padding:"10px 14px",marginBottom:12}}>
             <div>📅 {t.date}</div>
             <div>⏰ {st} — {et}</div>
+            {t.location&&<div>📍 {t.location}</div>}
             {t.priority&&<div>{PL[t.priority]}</div>}
-            {t.recurring&&t.recurring!=="none"&&<div>🔁 {t.recurring==="daily"?"Her gün":t.recurring==="weekly"?"Her hafta":"Her ay"}</div>}
+            {t.reminder&&<div>🔔 {t.reminder} dk önce hatırlat</div>}
+            {t.taskType==="focus"&&<div>🎯 Odak Zamanı</div>}
+            {t.recurring&&t.recurring!=="none"&&<div>🔁 {t.recurring==="daily"?"Her gün":t.recurring==="weekly"?"Her hafta":"Her ay"}{t.recurCount?` · ${t.recurCount} kez`:""}</div>}
             {t.desc&&<div style={{marginTop:6,paddingTop:6,borderTop:"1px solid var(--b1)",color:"var(--t3)"}}>{t.desc}</div>}
           </div>
           <div style={{display:"flex",gap:7}}>
@@ -575,35 +663,107 @@ function Modal() {
     )
   }
 
-  /* ── FORM MODALLER ── */
-  const CFGS = {
+  const taskFields=()=>(
+    <>
+      {/* Tip */}
+      <div className="fg">
+        <label className="fl">Tür</label>
+        <div style={{display:"flex",gap:6,marginTop:4}}>
+          {[["task","📋 Görev"],["focus","🎯 Odak"],["event","📅 Etkinlik"]].map(([v,l])=>(
+            <div key={v} onClick={()=>upd("taskType",v)}
+              style={{padding:"5px 12px",borderRadius:6,border:`1px solid ${(f.taskType||"task")===v?"var(--acc)":"var(--b1)"}`,background:(f.taskType||"task")===v?"rgba(79,158,255,.12)":"var(--s1)",cursor:"pointer",fontSize:12,color:(f.taskType||"task")===v?"var(--acc)":"var(--t2)",transition:".1s"}}
+            >{l}</div>
+          ))}
+        </div>
+      </div>
+      <div className="fg"><label className="fl">Görev Adı</label>
+        <input className="fi2" placeholder={f.taskType==="focus"?"Odak seansı...":"Veri Yapıları çalış..."} value={f.title||""} onChange={e=>upd("title",e.target.value)}/></div>
+      <div className="fg"><label className="fl">Tarih</label>
+        <input className="fi2" type="date" value={f.date||dk(t0)} onChange={e=>upd("date",e.target.value)}/></div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        <div className="fg"><label className="fl">Başlangıç</label>
+          <input className="fi2" type="time" value={f.startTime||"09:00"} onChange={e=>upd("startTime",e.target.value)}/></div>
+        <div className="fg"><label className="fl">Bitiş</label>
+          <input className="fi2" type="time" value={f.endTime||"10:00"} onChange={e=>upd("endTime",e.target.value)}/></div>
+      </div>
+      <div className="fg"><label className="fl">Konum (isteğe bağlı)</label>
+        <input className="fi2" placeholder="Kütüphane, D-101..." value={f.location||""} onChange={e=>upd("location",e.target.value)}/></div>
+      <div className="fg"><label className="fl">Açıklama</label>
+        <textarea className="fi2" rows={2} placeholder="Notlar..." value={f.desc||""} onChange={e=>upd("desc",e.target.value)} style={{resize:"none"}}/></div>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+        <div className="fg"><label className="fl">Öncelik</label>
+          <select className="fi2" value={f.priority||"medium"} onChange={e=>upd("priority",e.target.value)}>
+            <option value="high">🔴 Yüksek</option>
+            <option value="medium">🟡 Orta</option>
+            <option value="low">🟢 Düşük</option>
+          </select></div>
+        <div className="fg"><label className="fl">Hatırlatıcı</label>
+          <select className="fi2" value={f.reminder||""} onChange={e=>upd("reminder",e.target.value?Number(e.target.value):"")}>
+            <option value="">Yok</option>
+            <option value="5">5 dk önce</option>
+            <option value="10">10 dk önce</option>
+            <option value="15">15 dk önce</option>
+            <option value="30">30 dk önce</option>
+            <option value="60">1 saat önce</option>
+          </select></div>
+      </div>
+      {/* Tekrarlama */}
+      <div className="fg"><label className="fl">Tekrarlama</label>
+        <select className="fi2" value={f.recurring||"none"} onChange={e=>upd("recurring",e.target.value)}>
+          <option value="none">Yok</option>
+          <option value="daily">Her gün</option>
+          <option value="weekly">Her hafta</option>
+          <option value="monthly">Her ay</option>
+        </select>
+      </div>
+      {f.recurring&&f.recurring!=="none"&&(
+        <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+          <div className="fg"><label className="fl">Kaç kez tekrar</label>
+            <input className="fi2" type="number" min="1" max="52" placeholder="Sonsuz" value={f.recurCount||""} onChange={e=>upd("recurCount",e.target.value?Number(e.target.value):"")}/></div>
+          <div className="fg"><label className="fl">Bitiş tarihi</label>
+            <input className="fi2" type="date" value={f.recurEnd||""} onChange={e=>upd("recurEnd",e.target.value)}/></div>
+        </div>
+      )}
+      <div className="fg"><label className="fl">Renk</label>
+        <div style={{display:"flex",gap:7,flexWrap:"wrap",marginTop:4}}>
+          {COLORS.map(c=><div key={c} onClick={()=>upd("color",c)} style={{width:22,height:22,borderRadius:"50%",background:c,cursor:"pointer",outline:f.color===c?"3px solid white":"3px solid transparent",transition:".1s"}}/>)}
+        </div></div>
+    </>
+  )
+
+  const CFGS={
     task:{ title:"Görev Ekle", sub:()=>{
       const st=f.startTime||"09:00", et=f.endTime||"10:00"
-      const base={id:uid(),title:f.title||"Görev",date:f.date||dk(t0),startTime:st,endTime:et,
-        hour:parseInt(st.split(":")[0]),dur:Math.max(1,Math.round((timeToMins(et)-timeToMins(st))/60)),
-        done:false,color:f.color||"#4fa3ff",desc:f.desc||"",priority:f.priority||"medium",recurring:f.recurring||"none"}
+      const base={id:uid(),title:f.title||(f.taskType==="focus"?"Odak Zamanı":"Görev"),date:f.date||dk(t0),
+        startTime:st,endTime:et,hour:parseInt(st.split(":")[0]),
+        dur:Math.max(1,Math.round((timeToMins(et)-timeToMins(st))/60)),
+        done:false,color:f.color||"#4fa3ff",desc:f.desc||"",location:f.location||"",
+        priority:f.priority||"medium",recurring:f.recurring||"none",
+        recurCount:f.recurCount||null,recurEnd:f.recurEnd||null,
+        reminder:f.reminder||null,taskType:f.taskType||"task",calendarId:f.calendarId||null}
       const arr=[], bd=new Date(f.date||dk(t0))
+      const maxCount=base.recurCount||999
+      const endDate=base.recurEnd?new Date(base.recurEnd):null
+      const addTask=(d,i)=>{
+        if(i>=maxCount)return false
+        if(endDate&&d>endDate)return false
+        arr.push({...base,id:uid(),date:dk(d)}); return true
+      }
       if(base.recurring==="none") arr.push({...base,id:uid()})
-      else if(base.recurring==="daily")   for(let i=0;i<30;i++) arr.push({...base,id:uid(),date:dk(add(bd,i))})
-      else if(base.recurring==="weekly")  for(let i=0;i<8;i++)  arr.push({...base,id:uid(),date:dk(add(bd,i*7))})
-      else if(base.recurring==="monthly") for(let i=0;i<6;i++){const d=new Date(bd);d.setMonth(d.getMonth()+i);arr.push({...base,id:uid(),date:dk(d)})}
+      else if(base.recurring==="daily")  for(let i=0;i<365;i++){if(!addTask(add(bd,i),i))break}
+      else if(base.recurring==="weekly") for(let i=0;i<52;i++) {if(!addTask(add(bd,i*7),i))break}
+      else if(base.recurring==="monthly")for(let i=0;i<24;i++) {const d=new Date(bd);d.setMonth(d.getMonth()+i);if(!addTask(d,i))break}
       setTasks(ts=>[...ts,...arr])
     }},
     editTask:{ title:"Görevi Düzenle", sub:()=>{
       setTasks(ts=>ts.map(t=>{
-        if(t.id!==modalTask?.id) return t
+        if(t.id!==modalTask?.id)return t
         const st=f.startTime||t.startTime||"09:00"
         const et=f.endTime||t.endTime||"10:00"
-        return {...t,
-          title:f.title||t.title,
-          date:f.date||t.date,
-          startTime:st, endTime:et,
-          hour:parseInt(st.split(":")[0]),
-          dur:Math.max(1,Math.round((timeToMins(et)-timeToMins(st))/60)),
-          desc:f.desc!==undefined?f.desc:t.desc,
-          priority:f.priority||t.priority,
-          color:f.color||t.color,
-        }
+        return {...t,title:f.title||t.title,date:f.date||t.date,startTime:st,endTime:et,
+          hour:parseInt(st.split(":")[0]),dur:Math.max(1,Math.round((timeToMins(et)-timeToMins(st))/60)),
+          desc:f.desc!==undefined?f.desc:t.desc,location:f.location!==undefined?f.location:t.location,
+          priority:f.priority||t.priority,color:f.color||t.color,reminder:f.reminder!==undefined?f.reminder:t.reminder}
       }))
     }},
     note:{ title:"Yeni Not", sub:()=>{
@@ -619,86 +779,57 @@ function Modal() {
       setGoals(gs=>[...gs,{id:uid(),title:f.title||"Hedef",target:parseFloat(f.target)||10,cur:0,color:f.color||"#4fa3ff"}])
     }},
   }
-  const cfg = CFGS[modal]; if(!cfg) return null
-  const submit = ()=>{ cfg.sub(); setModal(null) }
+  const cfg=CFGS[modal]; if(!cfg)return null
+  const submit=()=>{ cfg.sub(); setModal(null) }
 
   return (
     <div className="ov" onClick={e=>e.target.className==="ov"&&setModal(null)}>
-      <div className="mdl" onClick={e=>e.stopPropagation()}>
+      <div className="mdl" onClick={e=>e.stopPropagation()} style={{maxHeight:"85vh",overflowY:"auto"}}>
         <div className="mt">{cfg.title}</div>
 
-        {/* GÖREV EKLE */}
-        {modal==="task"&&<>
-          <div className="fg"><label className="fl">Görev Adı</label>
-            <input className="fi2" placeholder="Veri Yapıları çalış..." value={f.title||""} onChange={e=>upd("title",e.target.value)}/></div>
-          <div className="fg"><label className="fl">Tarih</label>
-            <input className="fi2" type="date" value={f.date||dk(t0)} onChange={e=>upd("date",e.target.value)}/></div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-            <div className="fg"><label className="fl">Başlangıç</label>
-              <input className="fi2" type="time" value={f.startTime||"09:00"} onChange={e=>upd("startTime",e.target.value)}/></div>
-            <div className="fg"><label className="fl">Bitiş</label>
-              <input className="fi2" type="time" value={f.endTime||"10:00"} onChange={e=>upd("endTime",e.target.value)}/></div>
-          </div>
-          <div className="fg"><label className="fl">Açıklama</label>
-            <textarea className="fi2" rows={2} placeholder="Görev açıklaması..." value={f.desc||""} onChange={e=>upd("desc",e.target.value)} style={{resize:"none"}}/></div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-            <div className="fg"><label className="fl">Öncelik</label>
-              <select className="fi2" value={f.priority||"medium"} onChange={e=>upd("priority",e.target.value)}>
-                <option value="high">🔴 Yüksek</option>
-                <option value="medium">🟡 Orta</option>
-                <option value="low">🟢 Düşük</option>
-              </select></div>
-            <div className="fg"><label className="fl">Tekrar</label>
-              <select className="fi2" value={f.recurring||"none"} onChange={e=>upd("recurring",e.target.value)}>
-                <option value="none">Yok</option>
-                <option value="daily">Her Gün</option>
-                <option value="weekly">Her Hafta</option>
-                <option value="monthly">Her Ay</option>
-              </select></div>
-          </div>
-          <div className="fg"><label className="fl">Renk</label>
-            <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:4}}>
-              {COLORS.map(c=><div key={c} onClick={()=>upd("color",c)} style={{width:24,height:24,borderRadius:"50%",background:c,cursor:"pointer",outline:f.color===c?"3px solid white":"3px solid transparent",transition:".1s"}}/>)}
-            </div></div>
-        </>}
+        {(modal==="task"||modal==="editTask")&&(
+          modal==="editTask"&&modalTask&&!modalTask.prefill
+            ? (() => {
+                const t=modalTask
+                return <>
+                  <div className="fg"><label className="fl">Görev Adı</label>
+                    <input className="fi2" defaultValue={t.title} onChange={e=>upd("title",e.target.value)}/></div>
+                  <div className="fg"><label className="fl">Tarih</label>
+                    <input className="fi2" type="date" defaultValue={t.date} onChange={e=>upd("date",e.target.value)}/></div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                    <div className="fg"><label className="fl">Başlangıç</label>
+                      <input className="fi2" type="time" defaultValue={t.startTime||`${String(t.hour||9).padStart(2,"0")}:00`} onChange={e=>upd("startTime",e.target.value)}/></div>
+                    <div className="fg"><label className="fl">Bitiş</label>
+                      <input className="fi2" type="time" defaultValue={t.endTime||`${String((t.hour||9)+(t.dur||1)).padStart(2,"0")}:00`} onChange={e=>upd("endTime",e.target.value)}/></div>
+                  </div>
+                  <div className="fg"><label className="fl">Konum</label>
+                    <input className="fi2" defaultValue={t.location||""} onChange={e=>upd("location",e.target.value)}/></div>
+                  <div className="fg"><label className="fl">Açıklama</label>
+                    <textarea className="fi2" rows={2} defaultValue={t.desc||""} onChange={e=>upd("desc",e.target.value)} style={{resize:"none"}}/></div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
+                    <div className="fg"><label className="fl">Öncelik</label>
+                      <select className="fi2" defaultValue={t.priority||"medium"} onChange={e=>upd("priority",e.target.value)}>
+                        <option value="high">🔴 Yüksek</option><option value="medium">🟡 Orta</option><option value="low">🟢 Düşük</option>
+                      </select></div>
+                    <div className="fg"><label className="fl">Hatırlatıcı</label>
+                      <select className="fi2" defaultValue={t.reminder||""} onChange={e=>upd("reminder",e.target.value?Number(e.target.value):"")}>
+                        <option value="">Yok</option><option value="5">5 dk</option><option value="15">15 dk</option><option value="30">30 dk</option><option value="60">1 saat</option>
+                      </select></div>
+                  </div>
+                  <div className="fg"><label className="fl">Renk</label>
+                    <div style={{display:"flex",gap:7,flexWrap:"wrap",marginTop:4}}>
+                      {COLORS.map(c=><div key={c} onClick={()=>upd("color",c)} style={{width:22,height:22,borderRadius:"50%",background:c,cursor:"pointer",outline:(f.color||t.color)===c?"3px solid white":"3px solid transparent",transition:".1s"}}/>)}
+                    </div></div>
+                </>
+              })()
+            : taskFields()
+        )}
 
-        {/* GÖREV DÜZENLE */}
-        {modal==="editTask"&&modalTask&&(()=>{
-          const t=modalTask
-          return <>
-            <div className="fg"><label className="fl">Görev Adı</label>
-              <input className="fi2" defaultValue={t.title} onChange={e=>upd("title",e.target.value)}/></div>
-            <div className="fg"><label className="fl">Tarih</label>
-              <input className="fi2" type="date" defaultValue={t.date} onChange={e=>upd("date",e.target.value)}/></div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-              <div className="fg"><label className="fl">Başlangıç</label>
-                <input className="fi2" type="time" defaultValue={t.startTime||`${String(t.hour||9).padStart(2,"0")}:00`} onChange={e=>upd("startTime",e.target.value)}/></div>
-              <div className="fg"><label className="fl">Bitiş</label>
-                <input className="fi2" type="time" defaultValue={t.endTime||`${String((t.hour||9)+(t.dur||1)).padStart(2,"0")}:00`} onChange={e=>upd("endTime",e.target.value)}/></div>
-            </div>
-            <div className="fg"><label className="fl">Açıklama</label>
-              <textarea className="fi2" rows={2} defaultValue={t.desc||""} onChange={e=>upd("desc",e.target.value)} style={{resize:"none"}}/></div>
-            <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:10}}>
-              <div className="fg"><label className="fl">Öncelik</label>
-                <select className="fi2" defaultValue={t.priority||"medium"} onChange={e=>upd("priority",e.target.value)}>
-                  <option value="high">🔴 Yüksek</option>
-                  <option value="medium">🟡 Orta</option>
-                  <option value="low">🟢 Düşük</option>
-                </select></div>
-            </div>
-            <div className="fg"><label className="fl">Renk</label>
-              <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:4}}>
-                {COLORS.map(c=><div key={c} onClick={()=>upd("color",c)} style={{width:24,height:24,borderRadius:"50%",background:c,cursor:"pointer",outline:(f.color||t.color)===c?"3px solid white":"3px solid transparent",transition:".1s"}}/>)}
-              </div></div>
-          </>
-        })()}
-
-        {/* YENİ NOT */}
         {modal==="note"&&<>
           <div className="fg"><label className="fl">Şablon</label>
             <div style={{display:"flex",gap:5,flexWrap:"wrap",marginTop:4}}>
               {Object.entries(NOTE_TPLS).map(([k,v])=>(
-                <div key={k} onClick={()=>setTpl(k)} style={{padding:"4px 10px",borderRadius:6,border:`1px solid ${tpl===k?"var(--acc)":"var(--b1)"}`,background:tpl===k?"rgba(79,163,255,.1)":"var(--s1)",cursor:"pointer",fontSize:12,color:tpl===k?"var(--acc)":"var(--t2)",transition:".1s"}}>{v.name}</div>
+                <div key={k} onClick={()=>setTpl(k)} style={{padding:"4px 10px",borderRadius:6,border:`1px solid ${tpl===k?"var(--acc)":"var(--b1)"}`,background:tpl===k?"rgba(79,158,255,.1)":"var(--s1)",cursor:"pointer",fontSize:12,color:tpl===k?"var(--acc)":"var(--t2)",transition:".1s"}}>{v.name}</div>
               ))}
             </div></div>
           <div className="fg"><label className="fl">Not Başlığı</label>
@@ -711,7 +842,6 @@ function Modal() {
             <input className="fi2" placeholder="tree, algoritma" value={f.tags||""} onChange={e=>upd("tags",e.target.value)}/></div>
         </>}
 
-        {/* YENİ KLASÖR */}
         {modal==="folder"&&<>
           <div className="fg"><label className="fl">Klasör Adı</label>
             <input className="fi2" placeholder="Algoritma..." value={f.name||""} onChange={e=>upd("name",e.target.value)}/></div>
@@ -722,22 +852,19 @@ function Modal() {
             </select></div>
         </>}
 
-        {/* YENİ HEDEF */}
         {modal==="goal"&&<>
           <div className="fg"><label className="fl">Hedef Adı</label>
             <input className="fi2" placeholder="Haftalık 25 saat..." value={f.title||""} onChange={e=>upd("title",e.target.value)}/></div>
           <div className="fg"><label className="fl">Hedef Değer</label>
             <input className="fi2" type="number" placeholder="25" value={f.target||""} onChange={e=>upd("target",e.target.value)}/></div>
           <div className="fg"><label className="fl">Renk</label>
-            <div style={{display:"flex",gap:8,flexWrap:"wrap",marginTop:4}}>
-              {COLORS.map(c=><div key={c} onClick={()=>upd("color",c)} style={{width:24,height:24,borderRadius:"50%",background:c,cursor:"pointer",outline:f.color===c?"3px solid white":"3px solid transparent",transition:".1s"}}/>)}
+            <div style={{display:"flex",gap:7,flexWrap:"wrap",marginTop:4}}>
+              {COLORS.map(c=><div key={c} onClick={()=>upd("color",c)} style={{width:22,height:22,borderRadius:"50%",background:c,cursor:"pointer",outline:f.color===c?"3px solid white":"3px solid transparent",transition:".1s"}}/>)}
             </div></div>
         </>}
 
-        <div style={{display:"flex",gap:8,marginTop:6}}>
-          <button className="btn bp" style={{flex:1}} onClick={submit}>
-            {modal==="editTask"?"Kaydet":"Ekle"}
-          </button>
+        <div style={{display:"flex",gap:8,marginTop:8}}>
+          <button className="btn bp" style={{flex:1}} onClick={submit}>{modal==="editTask"?"Kaydet":"Ekle"}</button>
           <button className="btn bg" onClick={()=>setModal(null)}>İptal</button>
         </div>
       </div>
@@ -998,258 +1125,398 @@ function StatsPage() {
 
 /* ═══════════════════════════════════════════════════════ CALENDAR PAGE */
 function CalendarPage() {
-  const {tasks,setTasks,setModal,setModalTask,modalTask} = useContext(Ctx)
-  const [view,setView]     = useState("week")
-  const [cal,setCal]       = useState(new Date(t0))
+  const {tasks,setTasks,setModal,setModalTask,calendars,setCalendars,calSearchQ,setCalSearchQ} = useContext(Ctx)
+  const [view,setView]   = useState("week")
+  const [cal,setCal]     = useState(new Date(t0))
+  const [selDay,setSelDay] = useState(dk(t0))
 
-  // Drag state
-  const dragInfo   = useRef(null) // {id, offsetMins}
-  const [ghostPos, setGhostPos] = useState(null) // {col, topPx, height}
+  const dragInfo    = useRef(null)
   const ghostPosRef = useRef(null)
-  const [dropKey,  setDropKey]  = useState(null)
+  const createRef   = useRef(null)
+  const resizeRef   = useRef(null)
+  const [ghostPos,setGhostPos]     = useState(null)
+  const [createGhost,setCreateGhost] = useState(null)
+  const [dropKey,setDropKey]       = useState(null)
 
-  const SNAP = 15 // dakika snap
-  const PX_PER_MIN = 1 // 60px/saat → 1px/min
+  const SNAP=15, PX_PER_MIN=1, HDR_H=46, START_H=7
+  const minsToTop = m => HDR_H+(m-START_H*60)*PX_PER_MIN
+  const fmtTime   = m => `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`
 
   const ws = useMemo(()=>{ const d=new Date(cal); d.setDate(cal.getDate()-((cal.getDay()+6)%7)); d.setHours(0,0,0,0); return d },[cal])
   const weekDays = useMemo(()=>Array.from({length:7},(_,i)=>add(ws,i)),[ws])
-  const ms  = new Date(cal.getFullYear(),cal.getMonth(),1)
-  const gs  = useMemo(()=>{ const d=new Date(ms); d.setDate(1-((ms.getDay()+6)%7)); return d },[ms])
-  const mcs = useMemo(()=>Array.from({length:42},(_,i)=>add(gs,i)),[gs])
+  const ms2  = new Date(cal.getFullYear(),cal.getMonth(),1)
+  const gs2  = useMemo(()=>{ const d=new Date(ms2); d.setDate(1-((ms2.getDay()+6)%7)); return d },[ms2])
+  const mcs  = useMemo(()=>Array.from({length:42},(_,i)=>add(gs2,i)),[gs2])
 
-  const prev=()=>setCal(d=>{ const r=new Date(d); view==="week"?r.setDate(r.getDate()-7):r.setMonth(r.getMonth()-1); return r })
-  const next=()=>setCal(d=>{ const r=new Date(d); view==="week"?r.setDate(r.getDate()+7):r.setMonth(r.getMonth()+1); return r })
+  const visibleCals = useMemo(()=>new Set(calendars.filter(c=>c.visible).map(c=>c.id)),[calendars])
+  const filteredTasks = useMemo(()=>{
+    let ts=tasks
+    if(calSearchQ) ts=ts.filter(t=>t.title.toLowerCase().includes(calSearchQ.toLowerCase()))
+    return ts
+  },[tasks,calSearchQ])
+
+  const prev=()=>setCal(d=>{ const r=new Date(d); if(view==="week")r.setDate(r.getDate()-7); else if(view==="month")r.setMonth(r.getMonth()-1); else r.setDate(r.getDate()-1); return r })
+  const next=()=>setCal(d=>{ const r=new Date(d); if(view==="week")r.setDate(r.getDate()+7); else if(view==="month")r.setMonth(r.getMonth()+1); else r.setDate(r.getDate()+1); return r })
+
   const title = view==="week"
     ? `${weekDays[0].toLocaleDateString("tr-TR",{day:"numeric",month:"short"})} – ${weekDays[6].toLocaleDateString("tr-TR",{day:"numeric",month:"short",year:"numeric"})}`
-    : cal.toLocaleDateString("tr-TR",{month:"long",year:"numeric"})
+    : view==="month" ? cal.toLocaleDateString("tr-TR",{month:"long",year:"numeric"})
+    : cal.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})
 
-  const HDR_H = 46   // header px
-  const START_H = 7  // 07:00
-
-  const minsToTop = mins => HDR_H + (mins - START_H*60) * PX_PER_MIN
-  const topToMins = (top, colEl) => {
-    const rect = colEl.getBoundingClientRect()
-    const relY  = top - rect.top
-    const mins  = START_H*60 + relY / PX_PER_MIN
-    return Math.round(mins / SNAP) * SNAP
+  const exportICS=()=>{
+    const lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//StudyFlow//TR"]
+    tasks.forEach(t=>{
+      const d=t.date.replace(/-/g,"")
+      const st=(t.startTime||`${String(t.hour||9).padStart(2,"0")}:00`).replace(":","")
+      const et=(t.endTime||`${String((t.hour||9)+(t.dur||1)).padStart(2,"0")}:00`).replace(":","")
+      lines.push("BEGIN:VEVENT",`DTSTART:${d}T${st}00`,`DTEND:${d}T${et}00`,`SUMMARY:${t.title}`,t.location?`LOCATION:${t.location}`:"","END:VEVENT")
+    })
+    lines.push("END:VCALENDAR")
+    const blob=new Blob([lines.filter(Boolean).join("\r\n")],{type:"text/calendar"})
+    const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="studyflow.ics"; a.click(); URL.revokeObjectURL(url)
   }
 
-  const fmtTime = m => `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`
-
-  /* ── WEEK DRAG handlers ── */
-  const onBlockMouseDown = (e, task) => {
+  /* ── MOVE DRAG ── */
+  const onBlockMouseDown=(e,task)=>{
+    if(e.target.classList.contains("resize-handle"))return
     e.preventDefault(); e.stopPropagation()
-    const blockTop = minsToTop(getStartMins(task))
-    const clickY   = e.clientY
-    const colEl    = e.currentTarget.closest(".wdcol")
-    const rect     = colEl?.getBoundingClientRect()
-    const relY     = rect ? clickY - rect.top : 0
-    const clickMins = START_H*60 + relY / PX_PER_MIN
-    const offsetMins = clickMins - getStartMins(task)
-    dragInfo.current = { id:task.id, offsetMins, task }
+    const colEl=e.currentTarget.closest(".wdcol")
+    const rect=colEl?.getBoundingClientRect()
+    const relY=rect?e.clientY-rect.top:0
+    const clickMins=START_H*60+relY/PX_PER_MIN
+    const offsetMins=clickMins-getStartMins(task)
+    dragInfo.current={id:task.id,offsetMins,task}
 
-    const onMove = ev => {
-      const col = document.elementFromPoint(ev.clientX, ev.clientY)?.closest(".wdcol")
-      if (!col) return
-      const rect2 = col.getBoundingClientRect()
-      const relY2 = ev.clientY - rect2.top
-      let newStartMins = START_H*60 + relY2/PX_PER_MIN - offsetMins
-      newStartMins = Math.round(newStartMins/SNAP)*SNAP
-      newStartMins = Math.max(START_H*60, Math.min(23*60, newStartMins))
-      const dur = getEndMins(task) - getStartMins(task)
-      const colIdx = parseInt(col.dataset.colidx||"0")
-      const gp = { colIdx, topPx: minsToTop(newStartMins), height: dur*PX_PER_MIN, startMins: newStartMins, dur }
-      ghostPosRef.current = gp
-      setGhostPos(gp)
-      setDropKey(`col-${colIdx}-${newStartMins}`)
+    const onMove=ev=>{
+      const col=document.elementFromPoint(ev.clientX,ev.clientY)?.closest(".wdcol")
+      if(!col)return
+      const r2=col.getBoundingClientRect()
+      let newSm=START_H*60+(ev.clientY-r2.top)/PX_PER_MIN-offsetMins
+      newSm=Math.round(newSm/SNAP)*SNAP; newSm=Math.max(START_H*60,Math.min(23*60,newSm))
+      const dur=getEndMins(task)-getStartMins(task)
+      const colIdx=parseInt(col.dataset.colidx||"0")
+      const gp={colIdx,topPx:minsToTop(newSm),height:dur*PX_PER_MIN,startMins:newSm,dur}
+      ghostPosRef.current=gp; setGhostPos(gp); setDropKey(`m-${colIdx}-${newSm}`)
     }
-
-    const onUp = ev => {
-      const gp = ghostPosRef.current
-      if (gp) {
-        const col = document.elementFromPoint(ev.clientX, ev.clientY)?.closest(".wdcol")
-        const colIdx = col ? parseInt(col.dataset.colidx||"0") : gp.colIdx
-        const newSm = gp.startMins
-        const newEm = newSm + gp.dur
-        const newDate = dk(weekDays[colIdx])
-        setTasks(ts=>ts.map(t=>t.id===task.id?{
-          ...t, date:newDate,
-          startTime:fmtTime(newSm), endTime:fmtTime(newEm),
-          hour:Math.floor(newSm/60), dur:Math.ceil(gp.dur/60)
-        }:t))
+    const onUp=ev=>{
+      const gp=ghostPosRef.current
+      if(gp){
+        const col=document.elementFromPoint(ev.clientX,ev.clientY)?.closest(".wdcol")
+        const colIdx=col?parseInt(col.dataset.colidx||"0"):gp.colIdx
+        const days=view==="day"?[cal]:weekDays
+        const newDate=dk(days[Math.min(colIdx,days.length-1)])
+        const newEm=gp.startMins+gp.dur
+        setTasks(ts=>ts.map(t=>t.id===task.id?{...t,date:newDate,startTime:fmtTime(gp.startMins),endTime:fmtTime(newEm),hour:Math.floor(gp.startMins/60),dur:Math.ceil(gp.dur/60)}:t))
       }
-      ghostPosRef.current = null
-      setGhostPos(null)
-      setDropKey(null)
-      dragInfo.current = null
-      window.removeEventListener("mousemove",onMove)
-      window.removeEventListener("mouseup",onUp)
+      ghostPosRef.current=null; setGhostPos(null); setDropKey(null); dragInfo.current=null
+      window.removeEventListener("mousemove",onMove); window.removeEventListener("mouseup",onUp)
     }
-
-    window.addEventListener("mousemove",onMove)
-    window.addEventListener("mouseup",onUp)
+    window.addEventListener("mousemove",onMove); window.addEventListener("mouseup",onUp)
   }
 
-  /* ── MONTH drag (HTML5) ── */
+  /* ── RESIZE DRAG ── */
+  const onResizeMouseDown=(e,task)=>{
+    e.preventDefault(); e.stopPropagation()
+    resizeRef.current={task}
+    const onMove=ev=>{
+      const col=ev.target.closest(".wdcol")||document.elementFromPoint(ev.clientX,ev.clientY)?.closest(".wdcol")
+      if(!col)return
+      const r=col.getBoundingClientRect()
+      let endM=START_H*60+(ev.clientY-r.top)/PX_PER_MIN
+      endM=Math.round(endM/SNAP)*SNAP; endM=Math.max(getStartMins(task)+15,Math.min(24*60,endM))
+      setTasks(ts=>ts.map(t=>t.id===task.id?{...t,endTime:fmtTime(endM),dur:Math.ceil((endM-getStartMins(task))/60)}:t))
+    }
+    const onUp=()=>{ resizeRef.current=null; window.removeEventListener("mousemove",onMove); window.removeEventListener("mouseup",onUp) }
+    window.addEventListener("mousemove",onMove); window.addEventListener("mouseup",onUp)
+  }
+
+  /* ── CREATE DRAG ── */
+  const onColMouseDown=(e,dayIdx)=>{
+    if(e.target.closest(".wblock")||e.target.classList.contains("resize-handle"))return
+    e.preventDefault()
+    const col=e.currentTarget
+    const r=col.getBoundingClientRect()
+    let startM=START_H*60+(e.clientY-r.top)/PX_PER_MIN
+    startM=Math.round(startM/SNAP)*SNAP
+    createRef.current={dayIdx,startMins:startM,endMins:startM+60}
+    setCreateGhost({colIdx:dayIdx,topPx:minsToTop(startM),height:60,startMins:startM,endMins:startM+60})
+
+    const onMove=ev=>{
+      const r2=col.getBoundingClientRect()
+      let endM=START_H*60+(ev.clientY-r2.top)/PX_PER_MIN
+      endM=Math.round(endM/SNAP)*SNAP; endM=Math.max(startM+15,Math.min(24*60,endM))
+      createRef.current.endMins=endM
+      setCreateGhost({colIdx:dayIdx,topPx:minsToTop(startM),height:(endM-startM)*PX_PER_MIN,startMins:startM,endMins:endM})
+    }
+    const onUp=()=>{
+      const cr=createRef.current
+      if(cr){
+        const days=view==="day"?[cal]:weekDays
+        const d=days[Math.min(cr.dayIdx,days.length-1)]
+        setModalTask({prefill:{date:dk(d),startTime:fmtTime(cr.startMins),endTime:fmtTime(cr.endMins)}})
+        setModal("task")
+      }
+      createRef.current=null; setCreateGhost(null)
+      window.removeEventListener("mousemove",onMove); window.removeEventListener("mouseup",onUp)
+    }
+    window.addEventListener("mousemove",onMove); window.addEventListener("mouseup",onUp)
+  }
+
+  /* ── MONTH DRAG ── */
   const onDS=(e,id)=>{ dragInfo.current={id}; e.dataTransfer.effectAllowed="move"; e.dataTransfer.setData("id",String(id)) }
   const onDE=()=>{ dragInfo.current=null; setDropKey(null) }
-  const dropMonth=(e,date)=>{
-    e.preventDefault()
-    const id=Number(e.dataTransfer.getData("id"))
-    if(id) setTasks(ts=>ts.map(t=>t.id===id?{...t,date:dk(date)}:t))
-    onDE()
+  const dropMonth=(e,date)=>{ e.preventDefault(); const id=Number(e.dataTransfer.getData("id")); if(id)setTasks(ts=>ts.map(t=>t.id===id?{...t,date:dk(date)}:t)); onDE() }
+
+  /* ── DAY/WEEK COLUMN RENDERER ── */
+  const renderDayCol=(day,di,colCount=7)=>{
+    const key=dk(day), dt=filteredTasks.filter(t=>t.date===key)
+    return (
+      <div key={di} className="wdcol" data-colidx={di} style={{gridColumn:di+1,gridRow:2,minWidth:colCount===1?"100%":"auto"}}
+        onMouseDown={e=>onColMouseDown(e,di)}
+      >
+        {HRS.map(h=>(
+          <div key={h} className={`whour${dropKey===`${key}-${h}`?" dov":""}`}>
+            {[15,30,45].map(m=>(
+              <div key={m} style={{position:"absolute",left:0,right:0,top:m,borderBottom:"1px dashed rgba(37,60,94,.18)",pointerEvents:"none"}}/>
+            ))}
+          </div>
+        ))}
+        {createGhost&&createGhost.colIdx===di&&(
+          <div className="create-ghost" style={{top:createGhost.topPx,height:Math.max(createGhost.height,20)}}>
+            <span style={{fontSize:10,color:"var(--acc)",fontWeight:700}}>{fmtTime(createGhost.startMins)} – {fmtTime(createGhost.endMins)}</span>
+          </div>
+        )}
+        {ghostPos&&ghostPos.colIdx===di&&dragInfo.current&&(()=>{
+          const gt=tasks.find(t=>t.id===dragInfo.current.id)
+          return gt?(
+            <div style={{position:"absolute",left:3,right:3,top:ghostPos.topPx,height:Math.max(ghostPos.height-3,20),background:gt.color+"35",border:`2px dashed ${gt.color}`,borderRadius:6,pointerEvents:"none",zIndex:20,display:"flex",alignItems:"center",padding:"0 7px"}}>
+              <span style={{fontSize:10,color:gt.color,fontWeight:700}}>{fmtTime(ghostPos.startMins)} – {fmtTime(ghostPos.startMins+ghostPos.dur)}</span>
+            </div>
+          ):null
+        })()}
+        {dt.map(t=>{
+          const sm=getStartMins(t), em=getEndMins(t)
+          const topPx=minsToTop(sm), height=Math.max((em-sm)*PX_PER_MIN-3,22)
+          const isGhost=dragInfo.current?.id===t.id&&ghostPos
+          const cal2=calendars.find(c=>c.id===t.calendarId)
+          return (
+            <div key={t.id} style={{
+              position:"absolute",left:3,right:3,top:topPx,height,
+              background:isGhost?"transparent":t.color+"20",color:t.color,
+              borderLeft:`3px solid ${t.priority?PC[t.priority]:t.color}`,
+              borderRadius:6,padding:"3px 7px",cursor:"grab",fontSize:11,fontWeight:600,
+              overflow:"hidden",zIndex:5,opacity:isGhost?.25:1,userSelect:"none",
+              boxShadow:isGhost?"none":"0 2px 8px rgba(0,0,0,.2)",transition:"opacity .1s",
+            }}
+              onMouseDown={e=>onBlockMouseDown(e,t)}
+              onClick={e=>{if(!ghostPos){setModalTask(t);setModal("td")}}}
+            >
+              <div style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{t.title}{t.taskType==="focus"?" 🎯":""}{t.recurring&&t.recurring!=="none"?" 🔁":""}</div>
+              {height>36&&<div style={{fontSize:10,opacity:.65}}>{t.startTime||`${t.hour}:00`}–{t.endTime}</div>}
+              {height>52&&t.location&&<div style={{fontSize:10,opacity:.5,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>📍{t.location}</div>}
+              <div className="resize-handle" onMouseDown={e=>onResizeMouseDown(e,t)}/>
+            </div>
+          )
+        })}
+      </div>
+    )
   }
 
-  const ghostTask = ghostPos && dragInfo.current ? tasks.find(t=>t.id===dragInfo.current.id) : null
+  /* ── AGENDA VIEW ── */
+  const agendaDays = useMemo(()=>{
+    const result=[]
+    for(let i=-1;i<60;i++){
+      const d=add(t0,i), key=dk(d)
+      const dt=filteredTasks.filter(t=>t.date===key).sort((a,b)=>getStartMins(a)-getStartMins(b))
+      if(dt.length>0) result.push({date:d,key,tasks:dt})
+    }
+    return result
+  },[filteredTasks])
 
   return (
     <div className="cwrap">
+      {/* ── HEADER ── */}
       <div className="chead">
         <button className="cnav" onClick={prev}><Ic n="cl" sz={13}/></button>
-        <span style={{fontSize:14,fontWeight:700,minWidth:160}}>{title}</span>
+        <span style={{fontSize:13,fontWeight:700,minWidth:150}}>{title}</span>
         <button className="cnav" onClick={next}><Ic n="cr" sz={13}/></button>
-        <button className="btn bg bsm" onClick={()=>setCal(new Date(t0))}>Bugün</button>
+        <button className="btn bg bsm" onClick={()=>{setCal(new Date(t0));setSelDay(dk(t0))}}>Bugün</button>
         <button className="btn bp bsm" onClick={()=>setModal("task")}><Ic n="plus" sz={12}/> Görev Ekle</button>
+        <div style={{flex:1,maxWidth:200,position:"relative"}}>
+          <input value={calSearchQ} onChange={e=>setCalSearchQ(e.target.value)}
+            placeholder="🔍 Görev ara..." className="fi2"
+            style={{padding:"5px 10px",fontSize:12,width:"100%"}}/>
+        </div>
+        <button className="btn bg bsm" onClick={exportICS} title=".ics olarak dışa aktar">⬇ iCal</button>
         <div className="ctabs">
-          {[["week","Haftalık"],["month","Aylık"]].map(([v,l])=>(
+          {[["day","Gün"],["week","Hafta"],["month","Ay"],["agenda","Ajanda"]].map(([v,l])=>(
             <div key={v} className={`ctab${view===v?" on":""}`} onClick={()=>setView(v)}>{l}</div>
           ))}
         </div>
       </div>
 
-      {/* ── MONTH ── */}
-      {view==="month"&&(
-        <div className="month-out">
-          <div className="mgrid">
-            {DNS.map(d=><div key={d} className="mhdr">{d}</div>)}
-            {mcs.map((cell,i)=>{
-              const key=dk(cell), isT=key===dk(t0), isO=cell.getMonth()!==cal.getMonth()
-              const ct=tasks.filter(t=>t.date===key)
-              return (
-                <div key={i} className={`mcell${isT?" tod":""}${isO?" om":""}${dropKey===key?" dov":""}`}
-                  onDragOver={e=>{e.preventDefault();setDropKey(key)}}
-                  onDragLeave={()=>setDropKey(null)}
-                  onDrop={e=>dropMonth(e,cell)}
-                  onDoubleClick={()=>setModal("task")}
-                >
-                  <div className={`mdn${isT?" td":""}`}>{cell.getDate()}</div>
-                  {ct.slice(0,3).map(t=>{
-                    const st=t.startTime||`${String(t.hour||9).padStart(2,"0")}:00`
-                    return (
-                      <div key={t.id} className={`chip${t.done?" cdone":""}`}
-                        style={{background:t.color+"25",color:t.color,borderColor:t.color+"40",
-                          borderLeft:`3px solid ${t.priority?PC[t.priority]:t.color}`}}
-                        draggable onDragStart={e=>onDS(e,t.id)} onDragEnd={onDE}
-                        onClick={e=>{e.stopPropagation();setModalTask(t);setModal("td")}}
-                      >{st} {t.title}{t.recurring&&t.recurring!=="none"?" 🔁":""}</div>
-                    )
-                  })}
-                  {ct.length>3&&<div style={{fontSize:10,color:"var(--t3)",padding:"1px 5px"}}>+{ct.length-3}</div>}
+      <div className="cwrap-body">
+        {/* ── SOL PANEL ── */}
+        <div className="calsb">
+          {/* Mini Takvim */}
+          <MiniCalendar selected={selDay} onSelect={(key,cell)=>{
+            setSelDay(key); setCal(new Date(cell))
+            if(view==="month"||view==="agenda") setView("day")
+          }}/>
+
+          {/* Kategoriler */}
+          <div style={{marginTop:16,borderTop:"1px solid rgba(31,51,82,.4)",paddingTop:12}}>
+            <div style={{fontSize:9,fontWeight:700,color:"var(--t3)",letterSpacing:1.5,textTransform:"uppercase",marginBottom:8}}>Takvimler</div>
+            {calendars.map(c=>(
+              <div key={c.id} className="calcat" onClick={()=>setCalendars(cs=>cs.map(x=>x.id===c.id?{...x,visible:!x.visible}:x))}>
+                <div style={{width:12,height:12,borderRadius:3,background:c.visible?c.color:"transparent",border:`2px solid ${c.color}`,flexShrink:0,transition:".15s"}}/>
+                <span style={{flex:1,fontSize:12}}>{c.name}</span>
+                <span style={{fontSize:10,color:"var(--t3)"}}>{tasks.filter(t=>t.calendarId===c.id).length}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Bugünkü özet */}
+          <div style={{marginTop:16,borderTop:"1px solid rgba(31,51,82,.4)",paddingTop:12}}>
+            <div style={{fontSize:9,fontWeight:700,color:"var(--t3)",letterSpacing:1.5,textTransform:"uppercase",marginBottom:8}}>Bugün</div>
+            {tasks.filter(t=>t.date===dk(t0)).length===0
+              ? <div style={{fontSize:11,color:"var(--t3)",fontStyle:"italic"}}>Görev yok</div>
+              : tasks.filter(t=>t.date===dk(t0)).slice(0,4).map(t=>(
+                <div key={t.id} style={{display:"flex",alignItems:"center",gap:6,padding:"4px 0",borderBottom:"1px solid rgba(31,51,82,.2)"}}>
+                  <div style={{width:6,height:6,borderRadius:"50%",background:t.color,flexShrink:0}}/>
+                  <span style={{fontSize:11,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",color:t.done?"var(--t3)":"var(--t2)",textDecoration:t.done?"line-through":"none"}}>{t.title}</span>
                 </div>
-              )
-            })}
+              ))
+            }
           </div>
         </div>
-      )}
 
-      {/* ── WEEK ── */}
-      {view==="week"&&(
-        <div className="wout">
-          {/* Time col */}
-          <div className="wtimecol">
-            <div className="wthdr"/>
-            {HRS.map(h=><div key={h} className="wts">{String(h).padStart(2,"0")}:00</div>)}
-          </div>
-          {/* Day cols */}
-          <div className="wscroll">
-            <div className="winner">
-              {/* Headers */}
-              <div className="wdhrow">
-                {weekDays.map((day,di)=>{
-                  const isT=dk(day)===dk(t0)
+        {/* ── MAIN CALENDAR AREA ── */}
+        <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+
+          {/* MONTH */}
+          {view==="month"&&(
+            <div className="month-out">
+              <div className="mgrid">
+                {DNS.map(d=><div key={d} className="mhdr">{d}</div>)}
+                {mcs.map((cell,i)=>{
+                  const key=dk(cell), isT=key===dk(t0), isO=cell.getMonth()!==cal.getMonth()
+                  const ct=filteredTasks.filter(t=>t.date===key)
                   return (
-                    <div key={di} className="wdh">
-                      <div className="wdn">{DNS[di]}</div>
-                      <div className={`wdd${isT?" td":""}`}>{day.getDate()}</div>
+                    <div key={i} className={`mcell${isT?" tod":""}${isO?" om":""}${dropKey===key?" dov":""}`}
+                      onDragOver={e=>{e.preventDefault();setDropKey(key)}}
+                      onDragLeave={()=>setDropKey(null)}
+                      onDrop={e=>dropMonth(e,cell)}
+                      onDoubleClick={()=>{setModalTask({prefill:{date:key}});setModal("task")}}
+                    >
+                      <div className={`mdn${isT?" td":""}`} onClick={()=>{setCal(new Date(cell));setSelDay(key);setView("day")}}>{cell.getDate()}</div>
+                      {ct.slice(0,3).map(t=>(
+                        <div key={t.id} className={`chip${t.done?" cdone":""}`}
+                          style={{background:t.color+"22",color:t.color,borderColor:t.color+"35",borderLeft:`3px solid ${t.priority?PC[t.priority]:t.color}`}}
+                          draggable onDragStart={e=>onDS(e,t.id)} onDragEnd={onDE}
+                          onClick={e=>{e.stopPropagation();setModalTask(t);setModal("td")}}
+                        >{t.startTime||`${t.hour||9}:00`} {t.title}</div>
+                      ))}
+                      {ct.length>3&&<div style={{fontSize:10,color:"var(--t3)",padding:"1px 5px"}}>+{ct.length-3} daha</div>}
                     </div>
                   )
                 })}
               </div>
-              {/* Columns */}
-              {weekDays.map((day,di)=>{
-                const key=dk(day), dt=tasks.filter(t=>t.date===key)
-                return (
-                  <div key={di} className="wdcol" data-colidx={di} style={{gridColumn:di+1,gridRow:2}}>
-                    {/* Hour lines */}
-                    {HRS.map(h=>(
-                      <div key={h} className="whour"
-                        onDoubleClick={()=>{
-                          setModalTask(null)
-                          setModal("task")
-                        }}
-                      >
-                        {/* 15 min snap lines */}
-                        {[15,30,45].map(m=>(
-                          <div key={m} style={{position:"absolute",left:0,right:0,top:m,borderBottom:"1px dashed rgba(37,60,94,.2)",pointerEvents:"none"}}/>
-                        ))}
-                      </div>
-                    ))}
+            </div>
+          )}
 
-                    {/* Ghost block while dragging */}
-                    {ghostPos && ghostPos.colIdx===di && ghostTask&&(
-                      <div style={{
-                        position:"absolute",left:3,right:3,
-                        top:ghostPos.topPx, height:Math.max(ghostPos.height-3,20),
-                        background:ghostTask.color+"40",
-                        border:`2px dashed ${ghostTask.color}`,
-                        borderRadius:5, pointerEvents:"none", zIndex:20,
-                        display:"flex",alignItems:"center",padding:"0 6px"
-                      }}>
-                        <span style={{fontSize:11,fontWeight:700,color:ghostTask.color}}>
-                          {fmtTime(ghostPos.startMins)} – {fmtTime(ghostPos.startMins+ghostPos.dur)}
-                        </span>
-                      </div>
-                    )}
-
-                    {/* Task blocks */}
-                    {dt.map(t=>{
-                      const sm=getStartMins(t), em=getEndMins(t)
-                      const topPx=minsToTop(sm)
-                      const height=Math.max((em-sm)*PX_PER_MIN-3, 22)
-                      const st=t.startTime||`${String(t.hour||9).padStart(2,"0")}:00`
-                      const et=t.endTime||`${String((t.hour||9)+(t.dur||1)).padStart(2,"0")}:00`
-                      const isGhost = dragInfo.current?.id===t.id && ghostPos
+          {/* WEEK */}
+          {view==="week"&&(
+            <div className="wout">
+              <div className="wtimecol">
+                <div className="wthdr"/>
+                {HRS.map(h=><div key={h} className="wts">{String(h).padStart(2,"0")}:00</div>)}
+              </div>
+              <div className="wscroll">
+                <div className="winner">
+                  <div className="wdhrow">
+                    {weekDays.map((day,di)=>{
+                      const isT=dk(day)===dk(t0)
+                      const cnt=filteredTasks.filter(t=>t.date===dk(day)).length
                       return (
-                        <div key={t.id}
-                          style={{
-                            position:"absolute",left:3,right:3,
-                            top:topPx, height,
-                            background: isGhost ? "transparent" : t.color+"22",
-                            color:t.color,
-                            borderLeft:`3px solid ${t.priority?PC[t.priority]:t.color}`,
-                            borderRadius:5, padding:"3px 6px",
-                            cursor:"grab", fontSize:11, fontWeight:600,
-                            overflow:"hidden", zIndex:5,
-                            opacity: isGhost ? 0.3 : 1,
-                            userSelect:"none", transition:"opacity .1s",
-                            boxShadow: isGhost ? "none" : "0 1px 4px rgba(0,0,0,.2)"
-                          }}
-                          onMouseDown={e=>onBlockMouseDown(e,t)}
-                          onClick={e=>{ if(!dragInfo.current?.moved){ setModalTask(t); setModal("td") } }}
-                        >
-                          <div style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{t.title}{t.recurring&&t.recurring!=="none"?" 🔁":""}</div>
-                          {height>36&&<div style={{fontSize:10,opacity:.7}}>{st}–{et}</div>}
-                          {height>52&&t.desc&&<div style={{fontSize:10,opacity:.55,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{t.desc}</div>}
+                        <div key={di} className="wdh" style={{cursor:"pointer"}} onClick={()=>{setCal(new Date(day));setSelDay(dk(day));setView("day")}}>
+                          <div className="wdn">{DNS[di]}</div>
+                          <div className={`wdd${isT?" td":""}`}>{day.getDate()}</div>
+                          {cnt>0&&<div style={{fontSize:9,color:"var(--t3)",marginTop:1}}>{cnt} görev</div>}
                         </div>
                       )
                     })}
                   </div>
-                )
-              })}
+                  {weekDays.map((day,di)=>renderDayCol(day,di,7))}
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* DAY */}
+          {view==="day"&&(
+            <div className="wout">
+              <div className="wtimecol">
+                <div className="wthdr"/>
+                {HRS.map(h=><div key={h} className="wts">{String(h).padStart(2,"0")}:00</div>)}
+              </div>
+              <div className="wscroll" style={{flex:1}}>
+                <div style={{display:"grid",gridTemplateColumns:"1fr",minWidth:"100%"}}>
+                  <div className="wdhrow" style={{gridTemplateColumns:"1fr"}}>
+                    <div className="wdh" style={{textAlign:"center"}}>
+                      <div className="wdn">{cal.toLocaleDateString("tr-TR",{weekday:"long"}).toUpperCase()}</div>
+                      <div className={`wdd${dk(cal)===dk(t0)?" td":""}`}>{cal.getDate()}</div>
+                    </div>
+                  </div>
+                  <div style={{display:"grid",gridTemplateColumns:"1fr",position:"relative"}}>
+                    {renderDayCol(cal,0,1)}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* AGENDA */}
+          {view==="agenda"&&(
+            <div style={{flex:1,overflowY:"auto",padding:"14px 18px"}}>
+              {agendaDays.length===0&&(
+                <div style={{textAlign:"center",padding:"40px",color:"var(--t3)"}}>
+                  <div style={{fontSize:32,marginBottom:10}}>📭</div>
+                  <div>{calSearchQ?"Sonuç bulunamadı":"Yakında görev yok"}</div>
+                </div>
+              )}
+              {agendaDays.map(({date,key,tasks:dt})=>(
+                <div key={key}>
+                  <div className="agdate">
+                    {key===dk(t0)?"Bugün — ":key===dk(add(t0,1))?"Yarın — ":""}
+                    {date.toLocaleDateString("tr-TR",{weekday:"long",day:"numeric",month:"long"})}
+                  </div>
+                  {dt.map(t=>(
+                    <div key={t.id} className="agitem" onClick={()=>{setModalTask(t);setModal("td")}}>
+                      <div style={{width:4,alignSelf:"stretch",borderRadius:4,background:t.priority?PC[t.priority]:t.color,flexShrink:0}}/>
+                      <div style={{display:"flex",flexDirection:"column",gap:2,minWidth:80}}>
+                        <div style={{fontSize:11,fontWeight:700,color:"var(--t2)",fontFamily:"JetBrains Mono"}}>{t.startTime||`${t.hour||9}:00`}</div>
+                        <div style={{fontSize:10,color:"var(--t3)"}}>{t.endTime}</div>
+                      </div>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:13,fontWeight:600,color:t.done?"var(--t3)":"var(--t1)",textDecoration:t.done?"line-through":"none",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+                          {t.taskType==="focus"?"🎯 ":""}{t.title}{t.recurring&&t.recurring!=="none"?" 🔁":""}
+                        </div>
+                        {t.location&&<div style={{fontSize:11,color:"var(--t3)",marginTop:2}}>📍 {t.location}</div>}
+                        {t.desc&&<div style={{fontSize:11,color:"var(--t3)",marginTop:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{t.desc}</div>}
+                      </div>
+                      <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:4,flexShrink:0}}>
+                        {t.priority&&<span style={{fontSize:10,color:PC[t.priority]}}>{PL[t.priority].split(" ")[0]}</span>}
+                        {t.done&&<span style={{fontSize:10,color:"var(--green)"}}>✅</span>}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   )
 }
@@ -1514,6 +1781,225 @@ function NotesPage() {
   )
 }
 
+/* ═══════════════════════════════════════════════════════ Habit PAGE */
+
+
+function HabitPage() {
+  const {habits,setHabits} = useContext(Ctx)
+  const [showAdd,setShowAdd] = useState(false)
+  const [nf,setNf] = useState({name:"",icon:"💧",color:"#4f9eff"})
+  const todayKey = dk(t0)
+
+  const getStreak = habit => {
+    let streak=0, d=new Date(t0)
+    while(true){
+      const k=dk(d)
+      if(habit.completions.includes(k)){ streak++; d.setDate(d.getDate()-1) }
+      else break
+    }
+    return streak
+  }
+
+  const getLongest = habit => {
+    if(!habit.completions.length) return 0
+    const sorted=[...habit.completions].sort()
+    let max=1,cur=1
+    for(let i=1;i<sorted.length;i++){
+      const prev=new Date(sorted[i-1]), curr=new Date(sorted[i])
+      const diff=(curr-prev)/(1000*60*60*24)
+      if(diff===1){cur++;max=Math.max(max,cur)}else cur=1
+    }
+    return max
+  }
+
+  const toggle = (habit) => {
+    const has=habit.completions.includes(todayKey)
+    setHabits(hs=>hs.map(h=>h.id===habit.id?{...h,completions:has?h.completions.filter(c=>c!==todayKey):[...h.completions,todayKey]}:h))
+  }
+
+  const ICONS=["💧","🏃","📚","🧘","🥗","😴","🏋️","✍️","🎯","💊","🚫","🌿"]
+  const LAST14 = Array.from({length:14},(_,i)=>add(t0,i-13))
+
+  const motivate = streak => {
+    if(streak===0) return {msg:"Bugün başla! 💪",c:"var(--t3)"}
+    if(streak<3)   return {msg:`${streak} gün! Devam et! 🔥`,c:"var(--orange)"}
+    if(streak<7)   return {msg:`${streak} günlük seri! Harika gidiyorsun! ⚡`,c:"var(--acc)"}
+    if(streak<14)  return {msg:`${streak} GÜN! Alışkanlık oluşuyor! 🚀`,c:"var(--green)"}
+    return {msg:`${streak} GÜN SERİ! Efsane! 🏆`,c:"#ffaa3d"}
+  }
+
+  return (
+    <div className="cnt fade">
+      {/* HEADER */}
+      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"var(--sp-md)"}}>
+        <div>
+          <div style={{fontSize:"var(--fs-lg)",fontWeight:800}}>Alışkanlık Takibi</div>
+          <div style={{fontSize:"var(--fs-xs)",color:"var(--t3)",marginTop:3}}>Küçük adımlar, büyük değişimler yaratır.</div>
+        </div>
+        <button className="btn bp" onClick={()=>setShowAdd(s=>!s)}>
+          + Alışkanlık Ekle
+        </button>
+      </div>
+
+      {/* ADD FORM */}
+      {showAdd&&(
+        <div className="card" style={{marginBottom:"var(--sp-md)",border:"1px solid rgba(79,158,255,.3)"}}>
+          <div style={{fontSize:"var(--fs-sm)",fontWeight:700,marginBottom:12}}>Yeni Alışkanlık</div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr auto",gap:10,marginBottom:10}}>
+            <input className="fi2" placeholder="Alışkanlık adı..." value={nf.name} onChange={e=>setNf(x=>({...x,name:e.target.value}))}/>
+            <input className="fi2" style={{width:60,textAlign:"center",fontSize:20}} value={nf.icon} onChange={e=>setNf(x=>({...x,icon:e.target.value}))}/>
+          </div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
+            {ICONS.map(ic=>(
+              <div key={ic} onClick={()=>setNf(x=>({...x,icon:ic}))}
+                style={{width:34,height:34,borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center",fontSize:18,cursor:"pointer",background:nf.icon===ic?"rgba(79,158,255,.2)":"var(--s1)",border:`1px solid ${nf.icon===ic?"var(--acc)":"var(--b1)"}`,transition:".1s"}}>
+                {ic}
+              </div>
+            ))}
+          </div>
+          <div style={{display:"flex",gap:6,flexWrap:"wrap",marginBottom:12}}>
+            {COLORS.map(c=>(
+              <div key={c} onClick={()=>setNf(x=>({...x,color:c}))}
+                style={{width:22,height:22,borderRadius:"50%",background:c,cursor:"pointer",outline:nf.color===c?"3px solid white":"3px solid transparent",transition:".1s"}}/>
+            ))}
+          </div>
+          <div style={{display:"flex",gap:8}}>
+            <button className="btn bp" style={{flex:1}} onClick={()=>{
+              if(!nf.name.trim())return
+              setHabits(hs=>[...hs,{id:uid(),name:nf.name,icon:nf.icon,color:nf.color,completions:[]}])
+              setNf({name:"",icon:"💧",color:"#4f9eff"}); setShowAdd(false)
+            }}>Ekle</button>
+            <button className="btn bg" onClick={()=>setShowAdd(false)}>İptal</button>
+          </div>
+        </div>
+      )}
+
+      {habits.length===0&&(
+        <div style={{textAlign:"center",padding:"60px 20px",color:"var(--t3)"}}>
+          <div style={{fontSize:48,marginBottom:12}}>🌱</div>
+          <div style={{fontSize:"var(--fs-md)",fontWeight:700,marginBottom:6}}>Henüz alışkanlık yok</div>
+          <div style={{fontSize:"var(--fs-sm)"}}>İlk alışkanlığını ekleyerek başla!</div>
+        </div>
+      )}
+
+      {/* HABIT CARDS */}
+      <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(clamp(260px,28vw,360px),1fr))",gap:"var(--sp-md)"}}>
+        {habits.map(habit=>{
+          const streak=getStreak(habit)
+          const longest=getLongest(habit)
+          const doneToday=habit.completions.includes(todayKey)
+          const total=habit.completions.length
+          const mot=motivate(streak)
+
+          return (
+            <div key={habit.id} style={{
+              background:`linear-gradient(145deg,${habit.color}10,rgba(12,20,34,.97))`,
+              border:`1px solid ${habit.color}30`,borderRadius:"var(--r)",
+              padding:"var(--sp-md)",transition:"all .2s",
+              boxShadow:doneToday?`0 4px 24px ${habit.color}20`:"none"
+            }}>
+              {/* HEADER */}
+              <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
+                <div style={{display:"flex",alignItems:"center",gap:10}}>
+                  <div style={{width:40,height:40,borderRadius:10,background:`${habit.color}20`,border:`1px solid ${habit.color}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>
+                    {habit.icon}
+                  </div>
+                  <div>
+                    <div style={{fontSize:"var(--fs-sm)",fontWeight:700}}>{habit.name}</div>
+                    <div style={{fontSize:"var(--fs-xs)",color:mot.c,marginTop:2,fontWeight:600}}>{mot.msg}</div>
+                  </div>
+                </div>
+                <button onClick={()=>setHabits(hs=>hs.filter(h=>h.id!==habit.id))}
+                  style={{background:"none",border:"none",color:"var(--t3)",cursor:"pointer",fontSize:14,padding:4,lineHeight:1}}>✕</button>
+              </div>
+
+              {/* STATS ROW */}
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:7,marginBottom:12}}>
+                {[
+                  {l:"Güncel Seri",v:streak,ic:"🔥"},
+                  {l:"En Uzun",v:longest,ic:"🏆"},
+                  {l:"Toplam",v:total,ic:"✅"},
+                ].map((s,i)=>(
+                  <div key={i} style={{background:"rgba(0,0,0,.2)",borderRadius:8,padding:"8px 6px",textAlign:"center"}}>
+                    <div style={{fontSize:16,marginBottom:2}}>{s.ic}</div>
+                    <div style={{fontSize:"var(--fs-md)",fontWeight:800,color:"var(--t1)",lineHeight:1}}>{s.v}</div>
+                    <div style={{fontSize:"var(--fs-xs)",color:"var(--t3)",marginTop:2}}>{s.l}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* 14 GÜN GRID */}
+              <div style={{marginBottom:12}}>
+                <div style={{fontSize:"var(--fs-xs)",color:"var(--t3)",marginBottom:5,fontWeight:600}}>Son 14 Gün</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(14,1fr)",gap:3}}>
+                  {LAST14.map((d,i)=>{
+                    const k=dk(d), done=habit.completions.includes(k), isToday=k===todayKey
+                    return (
+                      <div key={i} title={k} style={{
+                        aspectRatio:"1",borderRadius:4,
+                        background:done?habit.color:"rgba(255,255,255,.05)",
+                        border:isToday?`2px solid ${habit.color}`:"2px solid transparent",
+                        transition:"all .15s",cursor:"default",
+                        boxShadow:done?`0 0 6px ${habit.color}50`:"none",
+                      }}/>
+                    )
+                  })}
+                </div>
+                <div style={{display:"flex",justifyContent:"space-between",marginTop:3}}>
+                  <span style={{fontSize:"var(--fs-xs)",color:"var(--t3)"}}>14 gün önce</span>
+                  <span style={{fontSize:"var(--fs-xs)",color:"var(--t3)"}}>bugün</span>
+                </div>
+              </div>
+
+              {/* BUGÜN BUTONU */}
+              <button onClick={()=>toggle(habit)} style={{
+                width:"100%",padding:"10px",borderRadius:8,border:"none",cursor:"pointer",
+                background:doneToday?`${habit.color}25`:"rgba(255,255,255,.04)",
+                color:doneToday?habit.color:"var(--t2)",
+                fontFamily:"Syne",fontWeight:700,fontSize:"var(--fs-sm)",
+                border:`1px solid ${doneToday?habit.color+"50":"rgba(255,255,255,.07)"}`,
+                transition:"all .2s",
+                boxShadow:doneToday?`0 2px 14px ${habit.color}30`:"none",
+              }}>
+                {doneToday?`✅ Bugün Tamamlandı!`:`○ Bugün Tamamla`}
+              </button>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* GENEL İSTATİSTİK */}
+      {habits.length>0&&(
+        <div className="card" style={{marginTop:"var(--sp-md)"}}>
+          <div className="sh">📊 Genel Alışkanlık İstatistikleri</div>
+          <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(140px,1fr))",gap:10}}>
+            {habits.map(h=>{
+              const s=getStreak(h)
+              const pct=Math.min(Math.round(h.completions.length/30*100),100)
+              return (
+                <div key={h.id} style={{padding:"10px 12px",background:"rgba(20,31,53,.5)",borderRadius:9,border:`1px solid ${h.color}20`}}>
+                  <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:7}}>
+                    <span style={{fontSize:14}}>{h.icon}</span>
+                    <span style={{fontSize:"var(--fs-xs)",fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1}}>{h.name}</span>
+                  </div>
+                  <div style={{display:"flex",alignItems:"baseline",gap:4,marginBottom:6}}>
+                    <span style={{fontSize:"var(--fs-xl)",fontWeight:800,color:h.color,lineHeight:1}}>{s}</span>
+                    <span style={{fontSize:"var(--fs-xs)",color:"var(--t3)"}}>gün seri 🔥</span>
+                  </div>
+                  <div style={{height:3,background:"rgba(255,255,255,.05)",borderRadius:10,overflow:"hidden"}}>
+                    <div style={{height:"100%",width:`${pct}%`,background:h.color,borderRadius:10,transition:"width .6s ease"}}/>
+                  </div>
+                  <div style={{fontSize:"var(--fs-xs)",color:"var(--t3)",marginTop:3}}>{h.completions.length} / 30 gün</div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* ═══════════════════════════════════════════════════════ GOALS PAGE */
 function GoalsPage() {
   const {goals,setGoals,notes,setModal} = useContext(Ctx)
@@ -1729,6 +2215,52 @@ function Dashboard() {
 /* ═══════════════════════════════════════════════════════ APP */
 export default function App() {
   useEffect(()=>{ const s=document.createElement("style"); s.textContent=CSS; document.head.appendChild(s); return ()=>document.head.removeChild(s) },[])
+
+  const [page,setPage]         = useState("dashboard")
+  const [folders,setFolders]   = useLS("sf_fold", I_FOLD)
+  const [notes,setNotes]       = useLS("sf_notes",I_NOTES)
+  const [tasks,setTasks]       = useLS("sf_tasks",I_TASKS)
+  const [goals,setGoals]       = useLS("sf_goals",I_GOALS)
+  const [folderFiles,setFolderFiles] = useLS("sf_ffiles",[])
+  const [habits,setHabits] = useLS("sf_habits", I_HABITS)
+  const [selFolder,setSelFolder]= useState(2)
+  const [selNote,setSelNote]   = useState(null)
+  const [editMode,setEditMode] = useState(false)
+  const [editTxt,setEditTxt]   = useState("")
+  const [editTitle,setEditTitle]= useState("")
+  const [modal,setModal]       = useState(null)
+  const [modalTask,setModalTask]= useState(null)
+  const [calendars,setCalendars] = useLS("sf_cals",[
+    {id:1,name:"Dersler",color:"#4f9eff",visible:true},
+    {id:2,name:"Kişisel",color:"#2edc8a",visible:true},
+    {id:3,name:"Sınavlar",color:"#ff5c6e",visible:true},
+  ])
+  const [calSearchQ,setCalSearchQ] = useState("")
+  const [tRunning,setTRunning] = useState(false)
+  const [tMode,setTMode]       = useState("work")
+  const [tSecs,setTSecs]       = useState(25*60)
+  const [tPomos,setTPomos]     = useState(0)
+  const [tWorkMin,setTWorkMin] = useState(25)
+  const [tBreakMin,setTBreakMin] = useState(5)
+  const [tDnd,setTDnd]         = useState(false)
+  const tRef                   = useRef(null)
+
+  useEffect(()=>{
+    if(tRunning){
+      tRef.current=setInterval(()=>{
+        setTSecs(s=>{
+          const WORK=tWorkMin*60, BRK=tBreakMin*60
+          if(s<=1){
+            if(tMode==="work"){ setTPomos(p=>p+1); setTMode("break"); return BRK }
+            setTMode("work"); return WORK
+          }
+          return s-1
+        })
+      },1000)
+    } else clearInterval(tRef.current)
+    return ()=>clearInterval(tRef.current)
+  },[tRunning,tMode,tWorkMin,tBreakMin])
+
   useEffect(()=>{
     const h = e => {
       if(e.ctrlKey && e.key==="n"){ e.preventDefault(); setModal("note") }
@@ -1738,44 +2270,21 @@ export default function App() {
     window.addEventListener("keydown",h); return ()=>window.removeEventListener("keydown",h)
   },[])
 
-
-  const [page,setPage]         = useState("dashboard")
-  const [folders,setFolders]   = useLS("sf_fold", I_FOLD)
-  const [notes,setNotes]       = useLS("sf_notes",I_NOTES)
-  const [tasks,setTasks]       = useLS("sf_tasks",I_TASKS)
-  const [goals,setGoals]       = useLS("sf_goals",I_GOALS)
-  const [folderFiles, setFolderFiles] = useLS("sf_ffiles", [])
-  const [selFolder,setSelFolder]= useState(2)
-  const [selNote,setSelNote]   = useState(null)
-  const [editMode,setEditMode] = useState(false)
-  const [editTxt,setEditTxt]   = useState("")
-  const [editTitle,setEditTitle]= useState("")
-  const [modal,setModal]       = useState(null)
-  const [tRunning, setTRunning]     = useState(false)
-const [tMode, setTMode]           = useState("work")
-const [tSecs, setTSecs]           = useState(25*60)
-const [tPomos, setTPomos]         = useState(0)
-const [tWorkMin, setTWorkMin]     = useState(25)
-const [tBreakMin, setTBreakMin]   = useState(5)
-const [tDnd, setTDnd]             = useState(false)
-const tRef                         = useRef(null)
-
-useEffect(()=>{
-  if(tRunning){
-    tRef.current=setInterval(()=>{
-      setTSecs(s=>{
-        const WORK=tWorkMin*60, BRK=tBreakMin*60
-        if(s<=1){
-          if(tMode==="work"){ setTPomos(p=>p+1); setTMode("break"); return BRK }
-          setTMode("work"); return WORK
+  useEffect(()=>{
+    if(typeof Notification!=="undefined" && Notification.permission==="default") Notification.requestPermission()
+    const iv=setInterval(()=>{
+      const now=new Date(), nowKey=dk(now), nowM=now.getHours()*60+now.getMinutes()
+      tasks.forEach(t=>{
+        if(t.date===nowKey&&!t.done&&t.reminder){
+          const notifyAt=getStartMins(t)-(t.reminder||15)
+          if(nowM===notifyAt && Notification.permission==="granted"){
+            new Notification(`⏰ ${t.title}`,{body:`${t.reminder} dakika içinde başlıyor — ${t.startTime||""}`})
+          }
         }
-        return s-1
       })
-    },1000)
-  } else clearInterval(tRef.current)
-  return ()=>clearInterval(tRef.current)
-},[tRunning,tMode,tWorkMin,tBreakMin])
-  const [modalTask,setModalTask]= useState(null)
+    },60000)
+    return ()=>clearInterval(iv)
+  },[tasks])
 
   const ctx = {
     tRunning,setTRunning,tMode,setTMode,tSecs,setTSecs,
@@ -1785,7 +2294,9 @@ useEffect(()=>{
     selFolder,setSelFolder,selNote,setSelNote,
     editMode,setEditMode,editTxt,setEditTxt,editTitle,setEditTitle,
     modal,setModal,modalTask,setModalTask,
-    folderFiles, setFolderFiles,
+    folderFiles,setFolderFiles,
+    calendars,setCalendars,calSearchQ,setCalSearchQ,
+    habits,setHabits,
   }
 
   const NAV=[
@@ -1795,9 +2306,10 @@ useEffect(()=>{
     {id:"timer",l:"Zamanlayıcı",ic:"timer"},
     {id:"stats",l:"İstatistikler",ic:"chart"},
     {id:"goals",l:"Hedefler",ic:"tgt"},
+    {id:"habits",l:"Alışkanlıklar",ic:"tgt"},
   ]
-  const TITLES={dashboard:"Dashboard",calendar:"Takvim & Planlayıcı",notes:"Notlar",timer:"Pomodoro Timer",stats:"İstatistikler",goals:"Hedefler & Rozetler"}
-  const PAGES={dashboard:Dashboard,calendar:CalendarPage,notes:NotesPage,timer:TimerPage,stats:StatsPage,goals:GoalsPage}
+  const TITLES={dashboard:"Dashboard",calendar:"Takvim & Planlayıcı",notes:"Notlar",timer:"Pomodoro Timer",stats:"İstatistikler",goals:"Hedefler & Rozetler",habits:"Alışkanlık Takibi"}
+  const PAGES={dashboard:Dashboard,calendar:CalendarPage,notes:NotesPage,timer:TimerPage,stats:StatsPage,goals:GoalsPage,habits:HabitPage,}
   const P=PAGES[page]||Dashboard
 
   return (
