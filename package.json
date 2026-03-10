@@ -1,0 +1,11 @@
+{
+  "name": "studyflow-dev",
+  "scripts": {
+    "dev": "concurrently -n BACKEND,FRONTEND -c cyan,magenta \"npm run backend\" \"npm run frontend\"",
+    "backend": "cd backend && uvicorn app.main:app --reload --port 8000",
+    "frontend": "cd frontend && npm run electron:dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
