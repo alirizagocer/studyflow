@@ -10,10 +10,14 @@ const FRONTEND_PORT = 5173;
 
 let mainWindow = null;
 let backendProcess = null;
+let viteProcess = null;
 let tray = null;
 
 function getPythonPath() {
-  if (IS_DEV) return "python3";
+  if (IS_DEV) {
+    const venvPython = path.join(__dirname, "..", "..", "backend", "venv", "bin", "python3");
+    return fs.existsSync(venvPython) ? venvPython : "python3";
+  }
   return path.join(process.resourcesPath, "backend", "venv", "bin", "python3");
 }
 
@@ -28,19 +32,24 @@ async function startBackend() {
     const python = getPythonPath();
     const backendDir = getBackendPath();
 
-    backendProcess = spawn(python, ["-m", "uvicorn", "app.main:app", "--port", String(BACKEND_PORT), "--no-access-log"], {
-      cwd: backendDir,
-      env: { ...process.env, PYTHONPATH: backendDir },
-    });
+    backendProcess = spawn(
+      python,
+      ["-m", "uvicorn", "app.main:app", "--port", String(BACKEND_PORT), "--no-access-log"],
+      {
+        cwd: backendDir,
+        env: { ...process.env, PYTHONPATH: backendDir },
+        stdio: "pipe",
+      }
+    );
 
     backendProcess.stdout.on("data", (data) => {
       const msg = data.toString();
-      console.log("[Backend]", msg);
       if (msg.includes("Application startup complete")) resolve();
     });
 
     backendProcess.stderr.on("data", (data) => {
-      console.error("[Backend Error]", data.toString());
+      const msg = data.toString();
+      if (msg.includes("Application startup complete") || msg.includes("Uvicorn running")) resolve();
     });
 
     backendProcess.on("error", reject);
@@ -48,21 +57,40 @@ async function startBackend() {
   });
 }
 
-async function waitForBackend(maxAttempts = 20) {
+async function startViteDev() {
+  return new Promise((resolve) => {
+    const frontendDir = path.join(__dirname, "..");
+    const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
+
+    viteProcess = spawn(npmCmd, ["run", "dev"], {
+      cwd: frontendDir,
+      stdio: "pipe",
+      shell: false,
+    });
+
+    viteProcess.stdout.on("data", (data) => {
+      const msg = data.toString();
+      if (msg.includes("localhost") || msg.includes("Local:")) resolve();
+    });
+
+    viteProcess.stderr.on("data", () => {});
+    viteProcess.on("error", resolve);
+    setTimeout(() => resolve(), 15_000);
+  });
+}
+
+async function waitForPort(port, maxAttempts = 40) {
   for (let i = 0; i < maxAttempts; i++) {
     try {
       await new Promise((resolve, reject) => {
-        http.get(`http://localhost:${BACKEND_PORT}/health`, (res) => {
-          if (res.statusCode === 200) resolve();
-          else reject(new Error(`Status: ${res.statusCode}`));
-        }).on("error", reject);
+        http.get(`http://localhost:${port}`, (res) => { res.resume(); resolve(); }).on("error", reject);
       });
       return;
     } catch {
-      await new Promise(r => setTimeout(r, 500));
+      await new Promise((r) => setTimeout(r, 500));
     }
   }
-  throw new Error("Backend erişilemiyor");
+  throw new Error(`Port ${port} erişilemiyor`);
 }
 
 function createWindow() {
@@ -87,7 +115,6 @@ function createWindow() {
     : `http://localhost:${BACKEND_PORT}/static/index.html`;
 
   mainWindow.loadURL(url);
-
   mainWindow.once("ready-to-show", () => mainWindow.show());
 
   mainWindow.webContents.setWindowOpenHandler(({ url }) => {
@@ -114,35 +141,30 @@ function createTray() {
 }
 
 ipcMain.handle("app:version", () => app.getVersion());
-
 ipcMain.handle("app:open-external", async (_, url) => {
-  if (/^https?:\/\//.test(url)) {
-    await shell.openExternal(url);
-    return true;
-  }
+  if (/^https?:\/\//.test(url)) { await shell.openExternal(url); return true; }
   return false;
 });
-
 ipcMain.handle("notification:show", (_, { title, body }) => {
-  if (Notification.isSupported()) {
-    new Notification({ title: `StudyFlow: ${title}`, body }).show();
-  }
+  if (Notification.isSupported()) new Notification({ title: `StudyFlow: ${title}`, body }).show();
 });
-
 ipcMain.handle("calendar:get-url", (_, token) => {
   return `http://localhost:${BACKEND_PORT}/api/calendar/${token}/studyflow.ics`;
 });
 
 app.whenReady().then(async () => {
   try {
-    console.log("📚 StudyFlow başlatılıyor...");
-    if (!IS_DEV) await startBackend();
-    await waitForBackend();
-    console.log("✅ Backend hazır");
+    await startBackend();
+    await waitForPort(BACKEND_PORT);
+
+    if (IS_DEV) {
+      await startViteDev();
+      await waitForPort(FRONTEND_PORT);
+    }
+
     createWindow();
     createTray();
   } catch (err) {
-    console.error("Başlatma hatası:", err);
     const { dialog } = require("electron");
     dialog.showErrorBox("StudyFlow Başlatılamadı", String(err));
     app.quit();
@@ -152,8 +174,6 @@ app.whenReady().then(async () => {
 app.on("window-all-closed", () => app.quit());
 
 app.on("before-quit", () => {
-  if (backendProcess) {
-    backendProcess.kill("SIGTERM");
-    backendProcess = null;
-  }
+  if (backendProcess) { backendProcess.kill("SIGTERM"); backendProcess = null; }
+  if (viteProcess) { viteProcess.kill("SIGTERM"); viteProcess = null; }
 });
