@@ -28,32 +28,25 @@ function getBackendPath() {
 }
 
 async function startBackend() {
-  return new Promise((resolve, reject) => {
-    const python = getPythonPath();
-    const backendDir = getBackendPath();
+  const python = getPythonPath();
+  const backendDir = getBackendPath();
 
-    backendProcess = spawn(
-      python,
-      ["-m", "uvicorn", "app.main:app", "--port", String(BACKEND_PORT), "--no-access-log"],
-      {
-        cwd: backendDir,
-        env: { ...process.env, PYTHONPATH: backendDir },
-        stdio: "pipe",
-      }
-    );
+  backendProcess = spawn(
+    python,
+    ["-m", "uvicorn", "app.main:app", "--port", String(BACKEND_PORT), "--no-access-log"],
+    {
+      cwd: backendDir,
+      env: { ...process.env, PYTHONPATH: backendDir },
+      stdio: "pipe",
+    }
+  );
 
-    backendProcess.stdout.on("data", (data) => {
-      const msg = data.toString();
-      if (msg.includes("Application startup complete")) resolve();
-    });
+  backendProcess.stderr.on("data", (data) => {
+    console.log("[Backend]", data.toString().trim());
+  });
 
-    backendProcess.stderr.on("data", (data) => {
-      const msg = data.toString();
-      if (msg.includes("Application startup complete") || msg.includes("Uvicorn running")) resolve();
-    });
-
-    backendProcess.on("error", reject);
-    setTimeout(() => reject(new Error("Backend 30 saniyede başlamadı")), 30_000);
+  backendProcess.on("error", (err) => {
+    console.error("[Backend] Spawn hatası:", err);
   });
 }
 
