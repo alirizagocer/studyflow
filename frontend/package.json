@@ -45,20 +45,9 @@
         "filter": ["**/*", "!**/__pycache__/**", "!**/*.pyc", "!**/tests/**"]
       }
     ],
-    "mac": {
-      "category": "public.app-category.education",
-      "target": [{ "target": "dmg", "arch": ["arm64", "x64"] }],
-      "entitlements": "electron/entitlements.mac.plist",
-      "hardenedRuntime": true
-    },
-    "win": {
-      "target": [{ "target": "nsis", "arch": ["x64"] }],
-      "publisherName": "StudyFlow"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "installerLanguages": ["tr_TR", "en_US"]
+    "linux": {
+      "target": [{ "target": "AppImage", "arch": ["x64"] }],
+      "category": "Education"
     },
     "extraMetadata": {
       "main": "electron/main.js"
