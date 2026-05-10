@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron:dev": "electron .",
     "electron:build": "npm run build && electron-builder",
     "test": "vitest"
   },
@@ -27,8 +27,6 @@
     "vite": "^5.2.11",
     "electron": "^31.0.0",
     "electron-builder": "^24.13.3",
-    "concurrently": "^8.2.2",
-    "wait-on": "^7.2.0",
     "vitest": "^1.6.0"
   },
   "build": {
