@@ -26,7 +26,10 @@ html,body,#root{height:100%;background:#000;color:#fff;font-family:'Inter',syste
   background:#000;
   border-right:1px solid #1a1a1a;
   display:flex;flex-direction:column;padding:16px 0;
+  transition:width .2s ease,min-width .2s ease,padding .2s ease,border .2s ease;
+  overflow:hidden;
 }
+.sidebar.closed{width:0;min-width:0;padding:0;border:none}
 .logo{padding:0 14px 18px;display:flex;align-items:center;gap:8px}
 .logo-ic{
   width:28px;height:28px;border-radius:6px;
@@ -34,16 +37,16 @@ html,body,#root{height:100%;background:#000;color:#fff;font-family:'Inter',syste
   display:flex;align-items:center;justify-content:center;
   font-size:13px;font-weight:800;color:#000;flex-shrink:0;
 }
-.logo-name{font-size:15px;font-weight:700;letter-spacing:-.3px;color:#fff}
+.logo-name{font-size:15px;font-weight:700;letter-spacing:-.3px;color:#fff;white-space:nowrap}
 .logo-name span{color:var(--acc)}
 .nav-g{padding:0 8px;flex:1}
-.nav-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:#444;text-transform:uppercase;padding:6px 8px 4px}
+.nav-lbl{font-size:10px;font-weight:700;letter-spacing:1.5px;color:#444;text-transform:uppercase;padding:6px 8px 4px;white-space:nowrap}
 .ni{
   display:flex;align-items:center;gap:8px;
   padding:7px 10px;border-radius:5px;cursor:pointer;
   color:#888;font-size:13px;font-weight:500;
   border:1px solid transparent;user-select:none;
-  transition:background .1s,color .1s;
+  transition:background .1s,color .1s;white-space:nowrap;
 }
 .ni:hover{background:#111;color:#fff}
 .ni.on{background:#111;color:#fff;border-color:#222}
@@ -140,11 +143,11 @@ html,body,#root{height:100%;background:#000;color:#fff;font-family:'Inter',syste
 .mhdr{
   padding:6px;text-align:center;font-size:10px;font-weight:700;
   color:#444;letter-spacing:1px;text-transform:uppercase;
-  border-bottom:1px solid #1a1a1a;border-right:1px solid #111;
+  border-bottom:1px solid #1a1a1a;border-right:1px solid #252525;
   background:#000;position:sticky;top:0;z-index:5;
 }
 .mcell{
-  border-right:1px solid #111;border-bottom:1px solid #111;
+  border-right:1px solid #252525;border-bottom:1px solid #252525;
   padding:4px;min-height:70px;cursor:default;transition:.1s;
 }
 .mcell:hover{background:#050505}
@@ -166,26 +169,26 @@ html,body,#root{height:100%;background:#000;color:#fff;font-family:'Inter',syste
 .chip.cdone{text-decoration:line-through;opacity:.4}
 
 .wout{display:flex;flex:1;overflow:hidden}
-.wtimecol{width:44px;flex-shrink:0;border-right:1px solid #1a1a1a;background:#000;overflow:hidden}
-.wthdr{height:46px;border-bottom:1px solid #1a1a1a}
+.wtimecol{width:52px;flex-shrink:0;border-right:1px solid #252525;background:#000;overflow:hidden}
+.wthdr{height:56px;border-bottom:1px solid #252525}
 .wts{
   height:50px;display:flex;align-items:flex-start;justify-content:flex-end;
-  padding:3px 5px 0;font-size:10px;color:#444;
-  font-family:'JetBrains Mono',monospace;border-bottom:1px solid #111;
+  padding:3px 7px 0;font-size:10px;color:#555;
+  font-family:'JetBrains Mono',monospace;border-bottom:1px solid #252525;
 }
 .wscroll{flex:1;overflow:auto}
 .winner{display:grid;grid-template-columns:repeat(7,1fr);min-width:560px}
-.wdhrow{display:grid;grid-template-columns:repeat(7,1fr);grid-column:1/-1;position:sticky;top:0;background:#000;border-bottom:1px solid #1a1a1a;z-index:10}
-.wdh{padding:6px 4px;text-align:center;border-right:1px solid #111}
-.wdn{font-size:10px;font-weight:700;color:#444;letter-spacing:1px;text-transform:uppercase}
-.wdd{font-size:14px;font-weight:700;color:#888;margin-top:1px}
+.wdhrow{display:grid;grid-template-columns:repeat(7,1fr);grid-column:1/-1;position:sticky;top:0;background:#000;border-bottom:1px solid #2a2a2a;z-index:10}
+.wdh{padding:10px 6px;text-align:center;border-right:1px solid #252525}
+.wdn{font-size:12px;font-weight:700;color:#555;letter-spacing:1px;text-transform:uppercase}
+.wdd{font-size:18px;font-weight:700;color:#999;margin-top:3px}
 .wdd.td{
   background:var(--acc);color:#000;
-  width:24px;height:24px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;margin:1px auto 0;
+  width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;margin:3px auto 0;
 }
-.wdcol{border-right:1px solid #111;position:relative;grid-row:2}
-.whour{height:50px;border-bottom:1px solid #111;position:relative}
+.wdcol{border-right:1px solid #252525;position:relative;grid-row:2}
+.whour{height:50px;border-bottom:1px solid #252525;position:relative}
 .whour.dov{background:#050a12}
 .wblock{
   position:absolute;left:3px;right:3px;border-radius:5px;padding:3px 6px;
@@ -267,7 +270,7 @@ html,body,#root{height:100%;background:#000;color:#fff;font-family:'Inter',syste
 .bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .bitem{
   background:#0a0a0a;border:1px solid #1a1a1a;
-  border-radius:6px;padding:12px 10px;text-align:center;transition:all .15s;
+  border-radius:6px;padding:12px 10px;text-align:center;transition:all .15px;
 }
 .bitem:hover{transform:translateY(-1px)}
 .bitem.ok{border-color:#1a2a3a;background:#050a12}
@@ -366,7 +369,6 @@ function renderMd(text, onLink) {
   return out
 }
 
-const SV = (d,p) => d.reduce((s,k)=>({ ...s,[k]:null }),{})
 const I={
   home:"M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6",
   notes:"M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z",
@@ -374,9 +376,11 @@ const I={
   timer:"M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
   chart:"M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z",
   tgt:"M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
-  plus:"M12 4v16m8-8H4",trash:"M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16",
+  plus:"M12 4v16m8-8H4",
+  trash:"M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16",
   edit:"M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z",
-  x:"M6 18L18 6M6 6l12 12",cl:"M15 19l-7-7 7-7",cr:"M9 5l7 7-7 7"
+  x:"M6 18L18 6M6 6l12 12",cl:"M15 19l-7-7 7-7",cr:"M9 5l7 7-7 7",
+  menu:"M4 6h16M4 12h16M4 18h16"
 }
 const Ic = ({n,sz=15,col})=>(
   <svg width={sz} height={sz} fill="none" viewBox="0 0 24 24" stroke={col||"currentColor"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0}}>
@@ -391,42 +395,17 @@ function useLS(key, init) {
   return [val,set]
 }
 
-/* ═══════════════════════════════════════════════════════ INIT DATA */
-const I_FOLD=[
-  {id:1,name:"CENG Dersler",pid:null},{id:2,name:"Veri Yapıları",pid:1},
-  {id:3,name:"OOP",pid:1},{id:4,name:"Veritabanı",pid:1},
-]
-const I_NOTES=[
-  {id:1,fid:2,title:"Binary Tree",tags:["tree","algoritma"],ts:7200,upd:"24 Şub",
-   body:"# Binary Tree\n\nBinary tree, her düğümün en fazla `iki çocuğu` olan bir ağaç yapısıdır.\n\n## Özellikler\n- Sol alt ağaç küçük değerleri\n- Sağ alt ağaç büyük değerleri\n\nBu konu [[Graph Algoritmaları]] ile bağlantılıdır."},
-  {id:2,fid:2,title:"Graph Algoritmaları",tags:["graph","bfs"],ts:5400,upd:"25 Şub",
-   body:"# Graph Algoritmaları\n\n## BFS\nQueue kullanır, level by level gezinir.\n\n## DFS\nStack kullanır, bir dalı sonuna kadar iner."},
-  {id:3,fid:3,title:"OOP Temelleri",tags:["oop"],ts:3600,upd:"23 Şub",
-   body:"# OOP Temelleri\n\n## Encapsulation\nVerileri sınıf içinde saklamak.\n\n## Inheritance\nBir sınıfın başka sınıftan özellik alması."},
-]
-const I_TASKS=[
-  {id:1,title:"Binary Tree çalış",date:dk(t0),hour:9,dur:2,done:false,color:"#4fa3ff"},
-  {id:2,title:"Graph BFS/DFS",date:dk(t0),hour:11,dur:1,done:false,color:"#7c6bff"},
-  {id:3,title:"OOP ödev",date:dk(add(t0,1)),hour:14,dur:1,done:false,color:"#ff6fa8"},
-  {id:4,title:"Veritabanı okuma",date:dk(add(t0,2)),hour:10,dur:2,done:false,color:"#2edc8a"},
-  {id:5,title:"Algoritma tekrar",date:dk(add(t0,-1)),hour:16,dur:1,done:true,color:"#ffaa3d"},
-]
-const I_GOALS=[
-  {id:1,title:"Haftalık 25 Saat",target:25,cur:18.3,color:"#4fa3ff"},
-  {id:2,title:"7 Günlük Streak",target:7,cur:5,color:"#ff6fa8"},
-  {id:3,title:"30 Not Al",target:30,cur:3,color:"#2edc8a"},
-]
-
-const I_HABITS = [
-  {id:1,name:"2.5 Litre Su İç",icon:"💧",color:"#4f9eff",completions:[]},
-  {id:2,name:"30 Dk Spor",icon:"🏃",color:"#2edc8a",completions:[]},
-]
+/* ═══════════════════════════════════════════════════════ INIT DATA (boş — veriler kullanımla birikir) */
+const I_FOLD=[]
+const I_NOTES=[]
+const I_TASKS=[]
+const I_GOALS=[]
+const I_HABITS=[]
 
 /* ═══════════════════════════════════════════════════════ CONTEXT */
 const Ctx = createContext(null)
 
 /* ═══════════════════════════════════════════════════════ GlobalSearch */
-
 function GlobalSearch() {
   const {notes,tasks,setPage,setSelNote,setSelFolder,setEditTxt,setEditTitle,setEditMode,setModal} = useContext(Ctx)
   const [open,setOpen] = useState(false)
@@ -450,7 +429,7 @@ function GlobalSearch() {
       <div style={{width:520,maxWidth:"92vw",background:"var(--bg3)",border:"1px solid var(--b2)",borderRadius:12,overflow:"hidden",boxShadow:"0 20px 60px rgba(0,0,0,.7)"}} onClick={e=>e.stopPropagation()}>
         <div style={{display:"flex",alignItems:"center",gap:10,padding:"12px 16px",borderBottom:"1px solid var(--b1)"}}>
           <span style={{fontSize:15}}>🔍</span>
-          <input ref={ref} value={q} onChange={e=>setQ(e.target.value)} placeholder="Not veya görev ara..." style={{flex:1,background:"transparent",border:"none",outline:"none",color:"var(--t1)",fontSize:14,fontFamily:"Syne"}}/>
+          <input ref={ref} value={q} onChange={e=>setQ(e.target.value)} placeholder="Not veya görev ara..." style={{flex:1,background:"transparent",border:"none",outline:"none",color:"var(--t1)",fontSize:14,fontFamily:"Inter"}}/>
           <kbd style={{fontSize:11,color:"var(--t3)",background:"var(--s2)",padding:"2px 6px",borderRadius:4}}>ESC</kbd>
         </div>
         {q ? (
@@ -494,6 +473,7 @@ function GlobalSearch() {
     </div>
   )
 }
+
 /* ═══════════════════════════════════════════════════════ MiniCalendar */
 function MiniCalendar({selected,onSelect}) {
   const {tasks} = useContext(Ctx)
@@ -501,7 +481,6 @@ function MiniCalendar({selected,onSelect}) {
   const ms = new Date(mc.getFullYear(),mc.getMonth(),1)
   const gs = new Date(ms); gs.setDate(1-((ms.getDay()+6)%7))
   const cells = Array.from({length:42},(_,i)=>add(gs,i))
-  const DAYS = ["P","S","Ç","P","C","C","P"]
 
   return (
     <div>
@@ -547,7 +526,8 @@ function MiniCalendar({selected,onSelect}) {
     </div>
   )
 }
-/* ═══════════════════════════════════════════════════════ MODAL (own state) */
+
+/* ═══════════════════════════════════════════════════════ MODAL */
 function Modal() {
   const {modal,setModal,modalTask,folders,notes,setNotes,setTasks,setGoals,setFolders,selFolder,setSelFolder,setSelNote,setEditMode,setEditTxt,setEditTitle,calendars} = useContext(Ctx)
   const [f,setF]     = useState({})
@@ -598,7 +578,6 @@ function Modal() {
 
   const taskFields=()=>(
     <>
-      {/* Tip */}
       <div className="fg">
         <label className="fl">Tür</label>
         <div style={{display:"flex",gap:6,marginTop:4}}>
@@ -640,7 +619,6 @@ function Modal() {
             <option value="60">1 saat önce</option>
           </select></div>
       </div>
-      {/* Tekrarlama */}
       <div className="fg"><label className="fl">Tekrarlama</label>
         <select className="fi2" value={f.recurring||"none"} onChange={e=>upd("recurring",e.target.value)}>
           <option value="none">Yok</option>
@@ -768,7 +746,8 @@ function Modal() {
           <div className="fg"><label className="fl">Not Başlığı</label>
             <input className="fi2" placeholder="Binary Tree..." value={f.title||""} onChange={e=>upd("title",e.target.value)}/></div>
           <div className="fg"><label className="fl">Klasör</label>
-            <select className="fi2" value={f.fid||selFolder} onChange={e=>upd("fid",e.target.value)}>
+            <select className="fi2" value={f.fid||selFolder||""} onChange={e=>upd("fid",e.target.value)}>
+              {folders.length===0&&<option value="">— Önce klasör oluştur —</option>}
               {folders.map(fl=><option key={fl.id} value={fl.id}>{fl.name}</option>)}
             </select></div>
           <div className="fg"><label className="fl">Etiketler (virgülle ayır)</label>
@@ -805,7 +784,7 @@ function Modal() {
   )
 }
 
-/* ═══════════════════════════════════════════════════════ TIMER PAGE (own state - no re-render leak) */
+/* ═══════════════════════════════════════════════════════ TIMER PAGE */
 function TimerPage() {
   const {notes,setNotes,selNote,
     tRunning:running,setTRunning:setRunning,
@@ -843,31 +822,21 @@ function TimerPage() {
           </select>
         </div>
 
-        {/* Süre ayarları */}
         <div style={{display:"flex",gap:12,marginBottom:18,alignItems:"flex-end"}}>
           <div style={{textAlign:"center"}}>
             <div style={{fontSize:10,color:"var(--t3)",marginBottom:4,fontWeight:700}}>ÇALIŞMA (dk)</div>
             <input type="number" min="1" max="90" value={tWorkMin}
-              onChange={e=>{
-                const v=Number(e.target.value)
-                setTWorkMin(v)
-                if(!running&&mode==="work") setSecs(v*60)
-              }}
+              onChange={e=>{const v=Number(e.target.value);setTWorkMin(v);if(!running&&mode==="work") setSecs(v*60)}}
               style={{width:60,textAlign:"center",background:"var(--s1)",border:"1px solid var(--b1)",borderRadius:6,color:"var(--t1)",padding:"5px",fontSize:14,fontFamily:"JetBrains Mono",outline:"none"}}/>
           </div>
           <div style={{textAlign:"center"}}>
             <div style={{fontSize:10,color:"var(--t3)",marginBottom:4,fontWeight:700}}>MOLA (dk)</div>
             <input type="number" min="1" max="30" value={tBreakMin}
-              onChange={e=>{
-                const v=Number(e.target.value)
-                setTBreakMin(v)
-                if(!running&&mode==="break") setSecs(v*60)
-              }}
+              onChange={e=>{const v=Number(e.target.value);setTBreakMin(v);if(!running&&mode==="break") setSecs(v*60)}}
               style={{width:60,textAlign:"center",background:"var(--s1)",border:"1px solid var(--b1)",borderRadius:6,color:"var(--t1)",padding:"5px",fontSize:14,fontFamily:"JetBrains Mono",outline:"none"}}/>
           </div>
-          <button
-            onClick={()=>setTDnd(d=>!d)}
-            style={{padding:"6px 12px",borderRadius:6,border:`1px solid ${tDnd?"var(--orange)":"var(--b1)"}`,background:tDnd?"rgba(255,170,61,.15)":"var(--s1)",color:tDnd?"var(--orange)":"var(--t2)",cursor:"pointer",fontSize:12,fontFamily:"Syne",fontWeight:600,whiteSpace:"nowrap"}}>
+          <button onClick={()=>setTDnd(d=>!d)}
+            style={{padding:"6px 12px",borderRadius:6,border:`1px solid ${tDnd?"var(--orange)":"var(--b1)"}`,background:tDnd?"rgba(255,170,61,.15)":"var(--s1)",color:tDnd?"var(--orange)":"var(--t2)",cursor:"pointer",fontSize:12,fontWeight:600,whiteSpace:"nowrap"}}>
             {tDnd?"🔕 Rahatsız Etme Açık":"🔔 Rahatsız Etme Kapalı"}
           </button>
         </div>
@@ -977,7 +946,7 @@ function StatsPage() {
             ].map((x,i)=>(
               <div key={i} className="card" style={{textAlign:"center",padding:14}}>
                 <div style={{fontSize:9,fontWeight:700,color:x.c,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8,opacity:.8}}>{x.l}</div>
-                <div style={{fontSize:18,fontWeight:700,color:"var(--t1)",fontFamily:"Syne"}}>{x.v}</div>
+                <div style={{fontSize:18,fontWeight:700,color:"var(--t1)"}}>{x.v}</div>
               </div>
             ))}
           </div>
@@ -986,7 +955,7 @@ function StatsPage() {
               <div className="sh">Günlük Çalışma (Saat)</div>
               <ResponsiveContainer width="100%" height={190}>
                 <BarChart data={wData} barSize={22}>
-                  <XAxis dataKey="day" tick={{fill:"var(--t3)",fontSize:11,fontFamily:"Syne"}} axisLine={false} tickLine={false}/>
+                  <XAxis dataKey="day" tick={{fill:"var(--t3)",fontSize:11}} axisLine={false} tickLine={false}/>
                   <YAxis tick={{fill:"var(--t3)",fontSize:11}} axisLine={false} tickLine={false}/>
                   <Tooltip contentStyle={{background:"var(--bg3)",border:"1px solid var(--b1)",borderRadius:6,fontSize:12}} formatter={(v,n)=>[n==="h"?`${v.toFixed(1)} saat`:`${v} görev`,n==="h"?"Süre":"Tamamlanan"]}/>
                   <Bar dataKey="h" name="h" radius={[4,4,0,0]}>
@@ -999,7 +968,7 @@ function StatsPage() {
               <div className="sh">Tamamlanan Görev</div>
               <ResponsiveContainer width="100%" height={190}>
                 <BarChart data={wData} barSize={22}>
-                  <XAxis dataKey="day" tick={{fill:"var(--t3)",fontSize:11,fontFamily:"Syne"}} axisLine={false} tickLine={false}/>
+                  <XAxis dataKey="day" tick={{fill:"var(--t3)",fontSize:11}} axisLine={false} tickLine={false}/>
                   <YAxis tick={{fill:"var(--t3)",fontSize:11}} axisLine={false} tickLine={false}/>
                   <Tooltip contentStyle={{background:"var(--bg3)",border:"1px solid var(--b1)",borderRadius:6,fontSize:12}} formatter={v=>[`${v} görev`]}/>
                   <Bar dataKey="done" radius={[4,4,0,0]} fill="var(--green)"/>
@@ -1071,7 +1040,7 @@ function CalendarPage() {
   const [createGhost,setCreateGhost] = useState(null)
   const [dropKey,setDropKey]       = useState(null)
 
-  const SNAP=15, PX_PER_MIN=1, HDR_H=46, START_H=7
+  const SNAP=15, PX_PER_MIN=1, HDR_H=56, START_H=7
   const minsToTop = m => HDR_H+(m-START_H*60)*PX_PER_MIN
   const fmtTime   = m => `${String(Math.floor(m/60)).padStart(2,"0")}:${String(m%60).padStart(2,"0")}`
 
@@ -1109,7 +1078,6 @@ function CalendarPage() {
     const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download="studyflow.ics"; a.click(); URL.revokeObjectURL(url)
   }
 
-  /* ── MOVE DRAG ── */
   const onBlockMouseDown=(e,task)=>{
     if(e.target.classList.contains("resize-handle"))return
     e.preventDefault(); e.stopPropagation()
@@ -1147,7 +1115,6 @@ function CalendarPage() {
     window.addEventListener("mousemove",onMove); window.addEventListener("mouseup",onUp)
   }
 
-  /* ── RESIZE DRAG ── */
   const onResizeMouseDown=(e,task)=>{
     e.preventDefault(); e.stopPropagation()
     resizeRef.current={task}
@@ -1163,7 +1130,6 @@ function CalendarPage() {
     window.addEventListener("mousemove",onMove); window.addEventListener("mouseup",onUp)
   }
 
-  /* ── CREATE DRAG ── */
   const onColMouseDown=(e,dayIdx)=>{
     if(e.target.closest(".wblock")||e.target.classList.contains("resize-handle"))return
     e.preventDefault()
@@ -1195,12 +1161,10 @@ function CalendarPage() {
     window.addEventListener("mousemove",onMove); window.addEventListener("mouseup",onUp)
   }
 
-  /* ── MONTH DRAG ── */
   const onDS=(e,id)=>{ dragInfo.current={id}; e.dataTransfer.effectAllowed="move"; e.dataTransfer.setData("id",String(id)) }
   const onDE=()=>{ dragInfo.current=null; setDropKey(null) }
   const dropMonth=(e,date)=>{ e.preventDefault(); const id=Number(e.dataTransfer.getData("id")); if(id)setTasks(ts=>ts.map(t=>t.id===id?{...t,date:dk(date)}:t)); onDE() }
 
-  /* ── DAY/WEEK COLUMN RENDERER ── */
   const renderDayCol=(day,di,colCount=7)=>{
     const key=dk(day), dt=filteredTasks.filter(t=>t.date===key)
     return (
@@ -1210,7 +1174,7 @@ function CalendarPage() {
         {HRS.map(h=>(
           <div key={h} className={`whour${dropKey===`${key}-${h}`?" dov":""}`}>
             {[15,30,45].map(m=>(
-              <div key={m} style={{position:"absolute",left:0,right:0,top:m,borderBottom:"1px dashed rgba(37,60,94,.18)",pointerEvents:"none"}}/>
+              <div key={m} style={{position:"absolute",left:0,right:0,top:m,borderBottom:"1px dashed rgba(255,255,255,.05)",pointerEvents:"none"}}/>
             ))}
           </div>
         ))}
@@ -1231,7 +1195,6 @@ function CalendarPage() {
           const sm=getStartMins(t), em=getEndMins(t)
           const topPx=minsToTop(sm), height=Math.max((em-sm)*PX_PER_MIN-3,22)
           const isGhost=dragInfo.current?.id===t.id&&ghostPos
-          const cal2=calendars.find(c=>c.id===t.calendarId)
           return (
             <div key={t.id} style={{
               position:"absolute",left:3,right:3,top:topPx,height,
@@ -1255,7 +1218,6 @@ function CalendarPage() {
     )
   }
 
-  /* ── AGENDA VIEW ── */
   const agendaDays = useMemo(()=>{
     const result=[]
     for(let i=-1;i<60;i++){
@@ -1268,7 +1230,6 @@ function CalendarPage() {
 
   return (
     <div className="cwrap">
-      {/* ── HEADER ── */}
       <div className="chead">
         <button className="cnav" onClick={prev}><Ic n="cl" sz={13}/></button>
         <span style={{fontSize:13,fontWeight:700,minWidth:150}}>{title}</span>
@@ -1289,15 +1250,12 @@ function CalendarPage() {
       </div>
 
       <div className="cwrap-body">
-        {/* ── SOL PANEL ── */}
         <div className="calsb">
-          {/* Mini Takvim */}
           <MiniCalendar selected={selDay} onSelect={(key,cell)=>{
             setSelDay(key); setCal(new Date(cell))
             if(view==="month"||view==="agenda") setView("day")
           }}/>
 
-          {/* Kategoriler */}
           <div style={{marginTop:16,borderTop:"1px solid rgba(31,51,82,.4)",paddingTop:12}}>
             <div style={{fontSize:9,fontWeight:700,color:"var(--t3)",letterSpacing:1.5,textTransform:"uppercase",marginBottom:8}}>Takvimler</div>
             {calendars.map(c=>(
@@ -1309,7 +1267,6 @@ function CalendarPage() {
             ))}
           </div>
 
-          {/* Bugünkü özet */}
           <div style={{marginTop:16,borderTop:"1px solid rgba(31,51,82,.4)",paddingTop:12}}>
             <div style={{fontSize:9,fontWeight:700,color:"var(--t3)",letterSpacing:1.5,textTransform:"uppercase",marginBottom:8}}>Bugün</div>
             {tasks.filter(t=>t.date===dk(t0)).length===0
@@ -1324,10 +1281,7 @@ function CalendarPage() {
           </div>
         </div>
 
-        {/* ── MAIN CALENDAR AREA ── */}
         <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-
-          {/* MONTH */}
           {view==="month"&&(
             <div className="month-out">
               <div className="mgrid">
@@ -1358,7 +1312,6 @@ function CalendarPage() {
             </div>
           )}
 
-          {/* WEEK */}
           {view==="week"&&(
             <div className="wout">
               <div className="wtimecol">
@@ -1375,7 +1328,7 @@ function CalendarPage() {
                         <div key={di} className="wdh" style={{cursor:"pointer"}} onClick={()=>{setCal(new Date(day));setSelDay(dk(day));setView("day")}}>
                           <div className="wdn">{DNS[di]}</div>
                           <div className={`wdd${isT?" td":""}`}>{day.getDate()}</div>
-                          {cnt>0&&<div style={{fontSize:9,color:"var(--t3)",marginTop:1}}>{cnt} görev</div>}
+                          {cnt>0&&<div style={{fontSize:10,color:"var(--t3)",marginTop:2}}>{cnt} görev</div>}
                         </div>
                       )
                     })}
@@ -1386,7 +1339,6 @@ function CalendarPage() {
             </div>
           )}
 
-          {/* DAY */}
           {view==="day"&&(
             <div className="wout">
               <div className="wtimecol">
@@ -1409,7 +1361,6 @@ function CalendarPage() {
             </div>
           )}
 
-          {/* AGENDA */}
           {view==="agenda"&&(
             <div style={{flex:1,overflowY:"auto",padding:"14px 18px"}}>
               {agendaDays.length===0&&(
@@ -1523,20 +1474,17 @@ function NotesPage() {
   }
 
   const delFolderFile = (fid) => setFolderFiles(fs=>fs.filter(f=>f.id!==fid))
-
   const fmtSize = b => b>1024*1024?`${(b/1024/1024).toFixed(1)}MB`:`${(b/1024).toFixed(0)}KB`
-
   const currentFolderFiles = folderFiles.filter(f=>f.folderId===selFolder)
 
   return (
     <div className="nwrap">
-
-      {/* FOLDERS */}
       <div className="fp">
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:9}}>
           <span style={{fontSize:9,fontWeight:700,color:"var(--t3)",letterSpacing:"1.5px",textTransform:"uppercase"}}>Klasörler</span>
           <button className="btn bg bsm bic" onClick={()=>setModal("folder")}><Ic n="plus" sz={12}/></button>
         </div>
+        {folders.length===0&&<div style={{color:"var(--t3)",fontSize:11,padding:"8px 0",fontStyle:"italic"}}>Klasör yok — + ile ekle</div>}
         {folders.filter(f=>!f.pid).map(f=>(
           <div key={f.id}>
             <div className={`fi${!search&&selFolder===f.id?" on":""}`} onClick={()=>{setSelFolder(f.id);setSearch("");setSelNote(null)}}>
@@ -1553,7 +1501,6 @@ function NotesPage() {
         ))}
       </div>
 
-      {/* NOTE LIST + FOLDER FILES */}
       <div className="nlp">
         <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:9}}>
           <span style={{fontSize:9,fontWeight:700,color:"var(--t3)",letterSpacing:"1.5px",textTransform:"uppercase"}}>Notlar</span>
@@ -1570,13 +1517,11 @@ function NotesPage() {
             </div>
           </div>
         ))}
-
-        {/* KLASÖR DOSYALARI */}
         {!search&&(
           <div style={{marginTop:14,borderTop:"1px solid var(--b1)",paddingTop:12}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
               <span style={{fontSize:9,fontWeight:700,color:"var(--t3)",letterSpacing:"1.5px",textTransform:"uppercase"}}>Klasör Dosyaları</span>
-              <button className="btn bg bsm bic" title="Dosya / Resim Ekle" onClick={()=>folderFileRef.current?.click()}>📎</button>
+              <button className="btn bg bsm bic" title="Dosya Ekle" onClick={()=>folderFileRef.current?.click()}>📎</button>
               <input ref={folderFileRef} type="file" accept="image/*,.pdf" style={{display:"none"}} onChange={handleFolderFile}/>
             </div>
             {currentFolderFiles.length===0&&(
@@ -1599,13 +1544,12 @@ function NotesPage() {
         )}
       </div>
 
-      {/* EDITOR */}
       <div className="ep">
         {selNote?(
           <>
             <div className="ehead">
               {editMode
-                ? <input value={editTitle} onChange={e=>setEditTitle(e.target.value)} style={{flex:1,background:"transparent",border:"none",outline:"none",fontSize:17,fontWeight:700,color:"var(--t1)",fontFamily:"Syne"}}/>
+                ? <input value={editTitle} onChange={e=>setEditTitle(e.target.value)} style={{flex:1,background:"transparent",border:"none",outline:"none",fontSize:17,fontWeight:700,color:"var(--t1)",fontFamily:"Inter"}}/>
                 : <span style={{fontSize:17,fontWeight:700,flex:1}}>{selNote.title}</span>}
               <div style={{display:"flex",gap:5,alignItems:"center",flexWrap:"wrap"}}>
                 {selNote.tags?.map(t=><span key={t} className="tag">{t}</span>)}
@@ -1626,21 +1570,17 @@ function NotesPage() {
                 )}
               </div>
             </div>
-
             <div style={{padding:"5px 17px",borderBottom:"1px solid var(--b1)",fontSize:11,color:"var(--t3)",display:"flex",gap:12,flexShrink:0}}>
               <span>{(selNote.ts/3600).toFixed(1)}s çalışıldı</span>
               <span>{selNote.upd}</span>
               {(selNote.attachments||[]).length>0&&<span>📎 {(selNote.attachments||[]).length} ek</span>}
               {backlinks.length>0&&<span>⬅ {backlinks.length} bağlantı</span>}
             </div>
-
             <div className="ebody">
               {editMode
                 ? <textarea className="etxt" value={editTxt} onChange={e=>setEditTxt(e.target.value)}/>
                 : <div className="ep-md">{renderMd(selNote.body, title=>{ const n=notes.find(x=>x.title===title); if(n) openNote(n) })}</div>
               }
-
-              {/* EKLER */}
               {(selNote.attachments||[]).length>0&&(
                 <div style={{marginTop:20,borderTop:"1px solid var(--b1)",paddingTop:16}}>
                   <div style={{fontSize:11,fontWeight:700,color:"var(--t3)",letterSpacing:1,marginBottom:12}}>EKLER</div>
@@ -1670,8 +1610,6 @@ function NotesPage() {
                   ))}
                 </div>
               )}
-
-              {/* BACKLINKLER */}
               {backlinks.length>0&&(
                 <div style={{marginTop:20,borderTop:"1px solid var(--b1)",paddingTop:16}}>
                   <div style={{fontSize:11,fontWeight:700,color:"var(--t3)",letterSpacing:1,marginBottom:10}}>⬅ BURAYA BAĞLANAN NOTLAR</div>
@@ -1694,7 +1632,6 @@ function NotesPage() {
         )}
       </div>
 
-      {/* PREVIEW MODAL */}
       {previewFile&&(
         <div className="ov" onClick={()=>setPreviewFile(null)} style={{zIndex:400}}>
           <div style={{maxWidth:"90vw",maxHeight:"90vh",position:"relative"}} onClick={e=>e.stopPropagation()}>
@@ -1709,14 +1646,11 @@ function NotesPage() {
           </div>
         </div>
       )}
-
     </div>
   )
 }
 
-/* ═══════════════════════════════════════════════════════ Habit PAGE */
-
-
+/* ═══════════════════════════════════════════════════════ HABIT PAGE */
 function HabitPage() {
   const {habits,setHabits} = useContext(Ctx)
   const [showAdd,setShowAdd] = useState(false)
@@ -1763,18 +1697,14 @@ function HabitPage() {
 
   return (
     <div className="cnt fade">
-      {/* HEADER */}
       <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:"var(--sp-md)"}}>
         <div>
           <div style={{fontSize:"var(--fs-lg)",fontWeight:800}}>Alışkanlık Takibi</div>
           <div style={{fontSize:"var(--fs-xs)",color:"var(--t3)",marginTop:3}}>Küçük adımlar, büyük değişimler yaratır.</div>
         </div>
-        <button className="btn bp" onClick={()=>setShowAdd(s=>!s)}>
-          + Alışkanlık Ekle
-        </button>
+        <button className="btn bp" onClick={()=>setShowAdd(s=>!s)}>+ Alışkanlık Ekle</button>
       </div>
 
-      {/* ADD FORM */}
       {showAdd&&(
         <div className="card" style={{marginBottom:"var(--sp-md)",border:"1px solid rgba(79,158,255,.3)"}}>
           <div style={{fontSize:"var(--fs-sm)",fontWeight:700,marginBottom:12}}>Yeni Alışkanlık</div>
@@ -1815,7 +1745,6 @@ function HabitPage() {
         </div>
       )}
 
-      {/* HABIT CARDS */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(clamp(260px,28vw,360px),1fr))",gap:"var(--sp-md)"}}>
         {habits.map(habit=>{
           const streak=getStreak(habit)
@@ -1831,7 +1760,6 @@ function HabitPage() {
               padding:"var(--sp-md)",transition:"all .2s",
               boxShadow:doneToday?`0 4px 24px ${habit.color}20`:"none"
             }}>
-              {/* HEADER */}
               <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:12}}>
                 <div style={{display:"flex",alignItems:"center",gap:10}}>
                   <div style={{width:40,height:40,borderRadius:10,background:`${habit.color}20`,border:`1px solid ${habit.color}40`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:20}}>
@@ -1846,7 +1774,6 @@ function HabitPage() {
                   style={{background:"none",border:"none",color:"var(--t3)",cursor:"pointer",fontSize:14,padding:4,lineHeight:1}}>✕</button>
               </div>
 
-              {/* STATS ROW */}
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:7,marginBottom:12}}>
                 {[
                   {l:"Güncel Seri",v:streak,ic:"🔥"},
@@ -1861,7 +1788,6 @@ function HabitPage() {
                 ))}
               </div>
 
-              {/* 14 GÜN GRID */}
               <div style={{marginBottom:12}}>
                 <div style={{fontSize:"var(--fs-xs)",color:"var(--t3)",marginBottom:5,fontWeight:600}}>Son 14 Gün</div>
                 <div style={{display:"grid",gridTemplateColumns:"repeat(14,1fr)",gap:3}}>
@@ -1884,24 +1810,22 @@ function HabitPage() {
                 </div>
               </div>
 
-              {/* BUGÜN BUTONU */}
               <button onClick={()=>toggle(habit)} style={{
                 width:"100%",padding:"10px",borderRadius:8,border:"none",cursor:"pointer",
                 background:doneToday?`${habit.color}25`:"rgba(255,255,255,.04)",
                 color:doneToday?habit.color:"var(--t2)",
-                fontFamily:"Syne",fontWeight:700,fontSize:"var(--fs-sm)",
+                fontFamily:"Inter",fontWeight:700,fontSize:"var(--fs-sm)",
                 border:`1px solid ${doneToday?habit.color+"50":"rgba(255,255,255,.07)"}`,
                 transition:"all .2s",
                 boxShadow:doneToday?`0 2px 14px ${habit.color}30`:"none",
               }}>
-                {doneToday?`✅ Bugün Tamamlandı!`:`○ Bugün Tamamla`}
+                {doneToday?"✅ Bugün Tamamlandı!":"○ Bugün Tamamla"}
               </button>
             </div>
           )
         })}
       </div>
 
-      {/* GENEL İSTATİSTİK */}
       {habits.length>0&&(
         <div className="card" style={{marginTop:"var(--sp-md)"}}>
           <div className="sh">📊 Genel Alışkanlık İstatistikleri</div>
@@ -1965,9 +1889,9 @@ function GoalsPage() {
           <div className="sh">Rozetler</div>
           <div className="bgrid">
             {[
-              {ic:"📝",name:"İlk Adım",desc:"İlk notunu aldın",ok:notes.length>0},
-              {ic:"🔥",name:"5 Gün Streak",desc:"5 gün üst üste",ok:true},
-              {ic:"⏰",name:"10 Saat",desc:"Toplam 10 saat",ok:true},
+              {ic:"📝",name:"İlk Adım",desc:"İlk notunu al",ok:notes.length>0},
+              {ic:"🔥",name:"5 Gün Streak",desc:"5 gün üst üste",ok:false},
+              {ic:"⏰",name:"10 Saat",desc:"Toplam 10 saat",ok:false},
               {ic:"🚀",name:"7 Gün Streak",desc:"7 gün üst üste",ok:false},
               {ic:"🎯",name:"Haftalık Hedef",desc:"Hedefini tamamla",ok:false},
               {ic:"🌐",name:"Graf Ustası",desc:"10 not al",ok:notes.length>=10},
@@ -1987,22 +1911,30 @@ function GoalsPage() {
 
 /* ═══════════════════════════════════════════════════════ DASHBOARD */
 function Dashboard() {
-  const {tasks,setTasks,setModal,notes,goals} = useContext(Ctx)
+  const {tasks,setTasks,setModal,goals} = useContext(Ctx)
   const tt   = tasks.filter(t=>t.date===dk(t0))
   const done = tt.filter(t=>t.done).length
-  const wData = useMemo(()=>DNS.map((d,i)=>({day:d,h:[2.1,3.4,4.1,2.8,3.9,1.2,0.8][i]})),[])
+
+  const ws = useMemo(()=>{ const d=new Date(t0); d.setDate(t0.getDate()-((t0.getDay()+6)%7)); return d },[])
+
+  const wData = useMemo(()=>DNS.map((d,i)=>{
+    const day=add(ws,i), key=dk(day)
+    const dayDone=tasks.filter(t=>t.date===key&&t.done)
+    const h=dayDone.reduce((s,t)=>s+(getEndMins(t)-getStartMins(t))/60,0)
+    return {day:d, h:Math.round(h*10)/10}
+  }),[tasks,ws])
+
+  const weekHours = wData.reduce((s,d)=>s+d.h,0)
 
   const statCards = [
-    {l:"Bu Hafta",v:"18.3",u:"saat",s:"/25 hedef",c:"#4f9eff",g:"rgba(79,158,255,.12)",pct:73,ic:"📚"},
+    {l:"Bu Hafta",v:weekHours.toFixed(1),u:"saat",s:"/hedef",c:"#4f9eff",g:"rgba(79,158,255,.12)",pct:goals.length>0?Math.min(Math.round(weekHours/goals[0]?.target*100),100):0,ic:"📚"},
     {l:"Bugün",v:`${done}/${tt.length}`,u:"",s:"görev tamamlandı",c:"#ffaa3d",g:"rgba(255,170,61,.1)",pct:tt.length?Math.round(done/tt.length*100):0,ic:"✅"},
-    {l:"Streak",v:"5",u:"gün",s:"üst üste",c:"#ff6fa8",g:"rgba(255,111,168,.1)",pct:71,ic:"🔥"},
-    {l:"Notlar",v:`${notes.length}`,u:"",s:"toplam not",c:"#2edc8a",g:"rgba(46,220,138,.1)",pct:Math.min(notes.length*3,100),ic:"📝"},
   ]
 
   return (
     <div className="cnt fade">
       {/* STAT CARDS */}
-      <div className="g4">
+      <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:10,marginBottom:12}}>
         {statCards.map((c,i)=>(
           <div key={i} style={{
             background:`linear-gradient(145deg,${c.g},rgba(12,20,34,.95))`,
@@ -2013,7 +1945,7 @@ function Dashboard() {
             onMouseOut={e=>{e.currentTarget.style.transform="";e.currentTarget.style.boxShadow=""}}
           >
             <div style={{fontSize:9,fontWeight:700,color:c.c,letterSpacing:1.5,textTransform:"uppercase",marginBottom:8,opacity:.8}}>{c.l}</div>
-            <div style={{fontSize:22,fontWeight:700,color:"var(--t1)",marginBottom:3,fontFamily:"Syne"}}>
+            <div style={{fontSize:22,fontWeight:700,color:"var(--t1)",marginBottom:3}}>
               {c.v}{c.u?" "+c.u:""}
             </div>
             <div style={{fontSize:11,color:"var(--t3)",fontWeight:400}}>{c.s}</div>
@@ -2068,7 +2000,7 @@ function Dashboard() {
           </div>
           <ResponsiveContainer width="100%" height={148}>
             <BarChart data={wData} barSize={20} barGap={4}>
-              <XAxis dataKey="day" tick={{fill:"var(--t3)",fontSize:11,fontFamily:"Syne"}} axisLine={false} tickLine={false}/>
+              <XAxis dataKey="day" tick={{fill:"var(--t3)",fontSize:11}} axisLine={false} tickLine={false}/>
               <YAxis hide/>
               <Tooltip
                 contentStyle={{background:"rgba(15,24,40,.95)",border:"1px solid rgba(31,51,82,.7)",borderRadius:8,fontSize:12,boxShadow:"0 8px 24px rgba(0,0,0,.4)"}}
@@ -2077,7 +2009,7 @@ function Dashboard() {
               />
               <Bar dataKey="h" radius={[5,5,0,0]}>
                 {wData.map((_,i)=>(
-                  <Cell key={i} fill={i===4?"url(#barGrad)":"rgba(31,51,82,.7)"}/>
+                  <Cell key={i} fill={i===(t0.getDay()+6)%7?"url(#barGrad)":"rgba(31,51,82,.7)"}/>
                 ))}
               </Bar>
               <defs>
@@ -2119,28 +2051,6 @@ function Dashboard() {
           </div>
         </div>
       )}
-
-      {/* ÖNERİLER */}
-      <div className="card">
-        <div className="sh">
-          <span style={{display:"flex",alignItems:"center",gap:6}}>
-            <span style={{width:6,height:6,borderRadius:"50%",background:"var(--green)",display:"inline-block",boxShadow:"0 0 6px var(--green)"}}/>
-            Akıllı Öneriler
-          </span>
-        </div>
-        {[
-          {ic:"🔔",t:"Veritabanı dersinde 3 gündür çalışmadınız.",c:"rgba(255,170,61,.08)",b:"rgba(255,170,61,.2)"},
-          {ic:"🚀",t:"Streak 5 gün! Yarın da çalışırsan rozet kazanırsın.",c:"rgba(79,158,255,.06)",b:"rgba(79,158,255,.18)"},
-          {ic:"📌",t:"Binary Tree notunu geçen hafta bıraktınız, bugün bitirin.",c:"rgba(46,220,138,.06)",b:"rgba(46,220,138,.18)"},
-        ].map((s,i)=>(
-          <div key={i} style={{display:"flex",gap:10,padding:"10px 13px",background:s.c,border:`1px solid ${s.b}`,borderRadius:9,marginBottom:7,fontSize:12,color:"var(--t2)",transition:".15s",cursor:"default"}}
-            onMouseOver={e=>{e.currentTarget.style.transform="translateX(3px)"}}
-            onMouseOut={e=>{e.currentTarget.style.transform=""}}
-          >
-            <span style={{fontSize:16,flexShrink:0}}>{s.ic}</span>{s.t}
-          </div>
-        ))}
-      </div>
     </div>
   )
 }
@@ -2149,14 +2059,24 @@ function Dashboard() {
 export default function App() {
   useEffect(()=>{ const s=document.createElement("style"); s.textContent=CSS; document.head.appendChild(s); return ()=>document.head.removeChild(s) },[])
 
+  // Versiyon bazlı localStorage sıfırlama — eski demo veriyi temizler
+  useEffect(()=>{
+    const CURRENT_VERSION="3.0"
+    if(localStorage.getItem("sf_version")!==CURRENT_VERSION){
+      ["sf_fold","sf_notes","sf_tasks","sf_goals","sf_ffiles","sf_habits","sf_cals"].forEach(k=>localStorage.removeItem(k))
+      localStorage.setItem("sf_version",CURRENT_VERSION)
+    }
+  },[])
+
+  const [sidebarOpen,setSidebarOpen] = useState(true)
   const [page,setPage]         = useState("dashboard")
   const [folders,setFolders]   = useLS("sf_fold", I_FOLD)
   const [notes,setNotes]       = useLS("sf_notes",I_NOTES)
   const [tasks,setTasks]       = useLS("sf_tasks",I_TASKS)
   const [goals,setGoals]       = useLS("sf_goals",I_GOALS)
   const [folderFiles,setFolderFiles] = useLS("sf_ffiles",[])
-  const [habits,setHabits] = useLS("sf_habits", I_HABITS)
-  const [selFolder,setSelFolder]= useState(2)
+  const [habits,setHabits]     = useLS("sf_habits",I_HABITS)
+  const [selFolder,setSelFolder]= useState(null)
   const [selNote,setSelNote]   = useState(null)
   const [editMode,setEditMode] = useState(false)
   const [editTxt,setEditTxt]   = useState("")
@@ -2219,6 +2139,15 @@ export default function App() {
     return ()=>clearInterval(iv)
   },[tasks])
 
+  const currentStreak = useMemo(()=>{
+    if(habits.length===0) return 0
+    return Math.max(...habits.map(h=>{
+      let s=0,d=new Date(t0)
+      while(h.completions.includes(dk(d))){s++;d.setDate(d.getDate()-1)}
+      return s
+    }))
+  },[habits])
+
   const ctx = {
     tRunning,setTRunning,tMode,setTMode,tSecs,setTSecs,
     tPomos,setTPomos,tWorkMin,setTWorkMin,tBreakMin,setTBreakMin,
@@ -2242,13 +2171,13 @@ export default function App() {
     {id:"habits",l:"Alışkanlıklar",ic:"tgt"},
   ]
   const TITLES={dashboard:"Dashboard",calendar:"Takvim & Planlayıcı",notes:"Notlar",timer:"Pomodoro Timer",stats:"İstatistikler",goals:"Hedefler & Rozetler",habits:"Alışkanlık Takibi"}
-  const PAGES={dashboard:Dashboard,calendar:CalendarPage,notes:NotesPage,timer:TimerPage,stats:StatsPage,goals:GoalsPage,habits:HabitPage,}
+  const PAGES={dashboard:Dashboard,calendar:CalendarPage,notes:NotesPage,timer:TimerPage,stats:StatsPage,goals:GoalsPage,habits:HabitPage}
   const P=PAGES[page]||Dashboard
 
   return (
     <Ctx.Provider value={ctx}>
       <div className="app">
-        <aside className="sidebar">
+        <aside className={`sidebar${sidebarOpen?"":" closed"}`}>
           <div className="logo">
             <div className="logo-ic">S</div>
             <div className="logo-name">Study<span>Flow</span></div>
@@ -2265,20 +2194,27 @@ export default function App() {
             <div className="streak">
               <div style={{display:"flex",alignItems:"center",gap:9}}>
                 <div style={{fontSize:14,fontWeight:700,color:"var(--acc)",lineHeight:1,fontFamily:"JetBrains Mono"}}>
-                  {habits.length>0?Math.max(...habits.map(h=>{let s=0,d=new Date(t0);while(h.completions.includes(dk(d))){s++;d.setDate(d.getDate()-1)}return s})):0} gün
+                  {currentStreak} gün
                 </div>
                 <div>
                   <div style={{fontSize:12,fontWeight:700}}>Günlük Streak</div>
                   <div style={{fontSize:11,color:"var(--t3)"}}>Yarın da çalış!</div>
                 </div>
               </div>
-              <div className="sfill" style={{width: habits.length>0?`${Math.min(Math.max(...habits.map(h=>{let s=0,d=new Date(t0);while(h.completions.includes(dk(d))){s++;d.setDate(d.getDate()-1)}return s}))/7*100,100)}%`:"0%"}}/>
+              <div className="sbar">
+                <div className="sfill" style={{width:`${Math.min(currentStreak/7*100,100)}%`}}/>
+              </div>
             </div>
           </div>
         </aside>
         <main className="main">
           <div className="topbar">
-            <div className="pt">{TITLES[page]}</div>
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <button className="btn bg bsm bic" onClick={()=>setSidebarOpen(o=>!o)} title="Menüyü gizle/göster">
+                <Ic n="menu" sz={14}/>
+              </button>
+              <div className="pt">{TITLES[page]}</div>
+            </div>
             <div className="tr">
               <button className="btn bg bsm" onClick={()=>setModal("task")}><Ic n="plus" sz={11}/> Görev</button>
               <button className="btn bg bsm" onClick={()=>setModal("note")}><Ic n="plus" sz={11}/> Not</button>
